@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-main", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: { default: "SiPilah PET", template: "%s | SiPilah PET" },
+  title: { default: "PilahPET", template: "%s | PilahPET" },
   description: "Pengelolaan botol minuman PET berbasis alat press manual dan sistem informasi terintegrasi.",
 };
 

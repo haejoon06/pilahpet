@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { jwtVerify, SignJWT } from "jose";
 
-export const SESSION_COOKIE = "sipilah_session";
+export const SESSION_COOKIE = "pilahpet_session";
 export type Role = "operator" | "treasurer" | "supervisor" | "admin";
 export type Session = { role: Role; issuedAt: number };
 

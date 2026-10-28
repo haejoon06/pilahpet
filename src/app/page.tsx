@@ -8,7 +8,7 @@ export default function Home() {
     <main>
       <section className="hero">
         <nav className="nav shell">
-          <Link className="brand" href="/">SiPilah <span>PET</span></Link>
+          <Link className="brand" href="/">Pilah<span>PET</span></Link>
           <div className="nav-links"><a href="#alur">Alur</a><a href="#ketentuan">Ketentuan</a><Link className="button small" href="/login">Masuk Pengelola</Link></div>
         </nav>
         <div className="shell hero-grid">
@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><div className="shell footer"><div><strong>SiPilah PET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
+      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
     </main>
   );
 }

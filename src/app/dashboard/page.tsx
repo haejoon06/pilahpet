@@ -13,7 +13,7 @@ export default async function DashboardPage() {
   try { data = await getDashboardData(); } catch { redirect("/?setup=database"); }
   const m = data.metrics as {members:number;deposits:number;stock_kg:number;cash_balance:number;collected_kg:number};
   return <main className="dashboard">
-    <header className="dash-nav"><div className="shell"><Link className="brand" href="/">SiPilah <span>PET</span></Link><form action="/api/auth/logout" method="post"><button className="button small ghost" type="submit">Keluar</button></form></div></header>
+    <header className="dash-nav"><div className="shell"><Link className="brand" href="/">Pilah<span>PET</span></Link><form action="/api/auth/logout" method="post"><button className="button small ghost" type="submit">Keluar</button></form></div></header>
     <div className="shell dash-main">
       <div className="dash-head"><div><span className="role-pill">{session.role.toUpperCase()}</span><h1>Dashboard pengelola</h1><p className="subtle">{data.location.name} • data operasional langsung dari Neon PostgreSQL</p></div><div><strong>{data.price ? rupiah(Number(data.price.price_per_kg)) : "Belum ditetapkan"}</strong><p className="subtle">Harga PET aktif per kg</p></div></div>
       <section className="metrics">

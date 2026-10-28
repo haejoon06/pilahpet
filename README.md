@@ -1,4 +1,4 @@
-# SiPilah PET
+# PilahPET
 
 Aplikasi PKM-Abdimas untuk mengelola anggota, setoran botol minuman PET, harga, stok, manfaat, penjualan, kas, dan audit pada satu titik pilot.
 

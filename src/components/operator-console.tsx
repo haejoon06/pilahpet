@@ -12,10 +12,10 @@ export default function OperatorConsole({role,members,deposits}:{role:Role;membe
   const canOperate = role === "operator" || role === "admin"; const canFinance = role === "treasurer" || role === "admin";
   async function send(event:FormEvent<HTMLFormElement>, url:string) {
     event.preventDefault(); setMessage("Menyimpan…"); const form=event.currentTarget; const data=Object.fromEntries(new FormData(form));
-    if(url==="/api/deposits") { data.clientTransactionId=crypto.randomUUID(); localStorage.setItem("sipilah-deposit-draft",JSON.stringify(data)); }
+    if(url==="/api/deposits") { data.clientTransactionId=crypto.randomUUID(); localStorage.setItem("pilahpet-deposit-draft",JSON.stringify(data)); }
     const response=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(data)}); const result=await response.json();
     if(!response.ok) return setMessage(result.error ?? "Data belum dapat disimpan.");
-    if(url==="/api/deposits") localStorage.removeItem("sipilah-deposit-draft"); form.reset(); setMessage("Data berhasil disimpan."); router.refresh();
+    if(url==="/api/deposits") localStorage.removeItem("pilahpet-deposit-draft"); form.reset(); setMessage("Data berhasil disimpan."); router.refresh();
   }
 
   return <div className="console-grid">

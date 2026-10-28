@@ -1,6 +1,6 @@
-# Arsitektur SiPilah PET
+# Arsitektur PilahPET
 
-SiPilah PET adalah modular monolith berbasis Next.js. Halaman publik dan dashboard berjalan pada Vercel, sedangkan data persisten tersimpan di Neon PostgreSQL yang terhubung melalui `DATABASE_URL`.
+PilahPET adalah modular monolith berbasis Next.js. Halaman publik dan dashboard berjalan pada Vercel, sedangkan data persisten tersimpan di Neon PostgreSQL yang terhubung melalui `DATABASE_URL`.
 
 ## Komponen
 

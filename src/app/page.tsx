@@ -1,69 +1,52 @@
-import Image from "next/image";
+import Link from "next/link";
+
+const accepted = ["Botol air mineral PET", "Botol teh atau minuman ringan PET", "Ukuran 330 ml–2 liter", "Kosong, bersih, dan kering"];
+const rejected = ["Kaca dan kaleng", "Plastik non-PET", "Botol masih berisi cairan", "Kemasan oli, pestisida, obat, atau bahan kimia"];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <section className="hero">
+        <nav className="nav shell">
+          <Link className="brand" href="/">SiPilah <span>PET</span></Link>
+          <div className="nav-links"><a href="#alur">Alur</a><a href="#ketentuan">Ketentuan</a><Link className="button small" href="/login">Masuk Pengelola</Link></div>
+        </nav>
+        <div className="shell hero-grid">
+          <div>
+            <p className="eyebrow">PKM-ABDimas • SATU TITIK PERCONTOHAN</p>
+            <h1>Botol PET terpilah, tercatat, dan bernilai.</h1>
+            <p className="lead">Sistem pengelolaan botol minuman PET berbasis alat press manual dan pencatatan digital untuk warga, operator, serta pengurus mitra.</p>
+            <div className="actions"><a className="button" href="#ketentuan">Lihat ketentuan setoran</a><Link className="button ghost" href="/login">Buka aplikasi</Link></div>
+            <p className="pilot-note">Lokasi pilot akan ditetapkan setelah asesmen mitra. Sensor dan IoT belum diaktifkan pada tahap pertama.</p>
+          </div>
+          <div className="hero-card" aria-label="Ringkasan material">
+            <div className="bottle" aria-hidden="true"><span>1</span><small>PET</small></div>
+            <h2>Fokus tahap pertama</h2>
+            <p>Hanya botol minuman berkode resin 1. Tutup dilepas sebelum pengepresan dan berat dicatat operator.</p>
+            <div className="stat-row"><div><strong>Manual</strong><span>alat press</span></div><div><strong>Digital</strong><span>pencatatan</span></div><div><strong>Terukur</strong><span>stok & kas</span></div></div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section id="ketentuan" className="section shell">
+        <p className="eyebrow green">SEBELUM MENYETOR</p><h2 className="section-title">Pastikan material tepat</h2>
+        <div className="two-cols">
+          <article className="info-card accept"><h3>✓ Diterima</h3><ul>{accepted.map((item) => <li key={item}>{item}</li>)}</ul></article>
+          <article className="info-card reject"><h3>× Ditolak</h3><ul>{rejected.map((item) => <li key={item}>{item}</li>)}</ul></article>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section id="alur" className="section muted">
+        <div className="shell"><p className="eyebrow green">ALUR LAYANAN</p><h2 className="section-title">Enam langkah yang mudah diaudit</h2>
+          <div className="steps">{[
+            ["01", "Daftar", "Warga memperoleh kode anggota."], ["02", "Periksa", "Operator memeriksa jenis dan kebersihan."],
+            ["03", "Timbang", "Berat bersih ditimbang manual."], ["04", "Catat", "Harga aktif disimpan sebagai snapshot."],
+            ["05", "Press", "Botol dipres dan masuk stok."], ["06", "Jual", "Stok, kas, dan manfaat direkonsiliasi."],
+          ].map(([no, title, copy]) => <article className="step" key={no}><span>{no}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+        </div>
+      </section>
+
+      <footer><div className="shell footer"><div><strong>SiPilah PET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
+    </main>
   );
 }

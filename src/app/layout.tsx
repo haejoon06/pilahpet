@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const body = Manrope({ variable: "--font-body", subsets: ["latin"] });
-const display = Space_Grotesk({ variable: "--font-display", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-main", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: { default: "SiPilah PET", template: "%s | SiPilah PET" },
@@ -11,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="id"><body className={`${body.variable} ${display.variable}`}>{children}</body></html>;
+  return <html lang="id"><body className={inter.variable}>{children}</body></html>;
 }

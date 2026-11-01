@@ -20,13 +20,13 @@ export default function LoginPage() {
 
   return <main className="auth-page"><section className="login-card">
     <Link className="brand" href="/">Pilah<span>PET</span></Link>
-    <h1>Masuk pengelola</h1><p>Pilih peran dan masukkan kode akses yang diberikan administrator program.</p>
+    <p className="eyebrow green auth-eyebrow">KHUSUS PENGURUS</p><h1>Masuk pengelola</h1><p>Pilih peran dan masukkan kode akses yang diberikan administrator program.</p>
     <form className="form" onSubmit={submit}>
       <div className="field"><label htmlFor="role">Peran</label><select id="role" name="role" defaultValue="operator"><option value="operator">Operator</option><option value="treasurer">Bendahara</option><option value="supervisor">Pengawas mitra</option><option value="admin">Administrator</option></select></div>
       <div className="field"><label htmlFor="code">Kode akses</label><input id="code" name="code" type="password" autoComplete="current-password" required minLength={8} /></div>
       {message && <p className="message error" role="alert">{message}</p>}
       <button className="button dark" type="submit" disabled={busy}>{busy ? "Memeriksa…" : "Masuk"}</button>
-      <Link className="subtle" href="/">← Kembali ke halaman publik</Link>
+      <div className="auth-links"><Link href="/anggota/masuk">Masuk sebagai anggota</Link><Link className="subtle" href="/">← Kembali ke halaman publik</Link></div>
     </form>
   </section></main>;
 }

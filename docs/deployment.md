@@ -18,9 +18,9 @@ Jangan menyimpan nilai variabel tersebut di Git. Vercel mengelolanya per lingkun
 1. Hubungkan repo GitHub ke proyek Vercel.
 2. Tambahkan integrasi Neon dan pastikan `DATABASE_URL` tersedia.
 3. Tarik variabel lingkungan secara lokal atau gunakan `vercel env run`.
-4. Jalankan `pnpm db:migrate` sekali untuk setiap database baru.
+4. Jalankan `node --env-file=.env.local scripts/migrate.mjs` sekali untuk setiap database baru.
 5. Jalankan `pnpm build`, lalu deploy ke produksi.
-6. Uji `/api/health`, login semua peran, setoran, harga, dan penjualan.
+6. Uji `/api/health`, pendaftaran warga, persetujuan operator, portal anggota, semua peran pengelola, setoran, reversal, harga, penjualan, kas, pencairan manfaat, pemeliharaan, dan laporan CSV.
 
 ## Pemulihan
 

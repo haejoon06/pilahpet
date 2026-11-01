@@ -9,14 +9,14 @@ export default function Home() {
       <section className="hero">
         <nav className="nav shell">
           <Link className="brand" href="/">Pilah<span>PET</span></Link>
-          <div className="nav-links"><a href="#alur">Alur</a><a href="#ketentuan">Ketentuan</a><Link className="button small" href="/login">Masuk Pengelola</Link></div>
+          <div className="nav-links"><a href="#alur">Alur</a><a href="#ketentuan">Ketentuan</a><Link href="/anggota/masuk">Masuk anggota</Link><Link className="button small" href="/login">Pengelola</Link></div>
         </nav>
         <div className="shell hero-grid">
           <div>
             <p className="eyebrow">PKM-ABDimas • SATU TITIK PERCONTOHAN</p>
             <h1>Botol PET terpilah, tercatat, dan bernilai.</h1>
             <p className="lead">Sistem pengelolaan botol minuman PET berbasis alat press manual dan pencatatan digital untuk warga, operator, serta pengurus mitra.</p>
-            <div className="actions"><a className="button" href="#ketentuan">Lihat ketentuan setoran</a><Link className="button ghost" href="/login">Buka aplikasi</Link></div>
+            <div className="actions"><Link className="button" href="/daftar">Daftar menjadi anggota</Link><Link className="button ghost" href="/anggota/masuk">Lihat riwayat setoran</Link></div>
             <p className="pilot-note">Lokasi pilot akan ditetapkan setelah asesmen mitra. Sensor dan IoT belum diaktifkan pada tahap pertama.</p>
           </div>
           <div className="hero-card" aria-label="Ringkasan material">
@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
+      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><div className="footer-links"><Link href="/daftar">Daftar anggota</Link><Link href="/anggota/masuk">Portal anggota</Link><Link href="/login">Pengelola</Link></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
     </main>
   );
 }

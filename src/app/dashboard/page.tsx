@@ -19,10 +19,18 @@ export default async function DashboardPage() {
       <section className="metrics">
         <div className="metric"><span>ANGGOTA AKTIF</span><strong>{m.members}</strong></div><div className="metric"><span>TRANSAKSI SETORAN</span><strong>{m.deposits}</strong></div><div className="metric"><span>PET TERKUMPUL</span><strong>{Number(m.collected_kg).toFixed(2)} kg</strong></div><div className="metric"><span>STOK SAAT INI</span><strong>{Number(m.stock_kg).toFixed(2)} kg</strong></div><div className="metric"><span>SALDO KAS</span><strong>{rupiah(Number(m.cash_balance))}</strong></div>
       </section>
-      <OperatorConsole role={session.role} members={data.members as Member[]} deposits={data.deposits as Deposit[]} />
+      <OperatorConsole role={session.role} members={data.members as Member[]} deposits={data.deposits as Deposit[]}
+        applications={data.applications as Application[]} sales={data.sales as Sale[]} prices={data.prices as Price[]}
+        cashEntries={data.cashEntries as CashEntry[]} maintenance={data.maintenance as Maintenance[]} audits={data.audits as Audit[]} />
     </div>
   </main>;
 }
 
-type Member = {id:string;member_code:string;name:string;area:string;benefit_mode:string};
-type Deposit = {id:string;member_name:string;net_weight_kg:number;total_value:number;confirmed_at:string};
+type Member = {id:string;member_code:string;name:string;area:string;phone?:string|null;account_type:string;benefit_mode:string;balance:number};
+type Deposit = {id:string;member_name:string;member_code:string;net_weight_kg:number;price_snapshot:number;total_value:number;status:string;confirmed_at:string;rejection_reason?:string|null};
+type Application = {id:string;application_code:string;name:string;area:string;phone:string;account_type:string;benefit_mode:string;status:string;notes?:string|null;created_at:string};
+type Sale = {id:string;buyer_name:string;weight_kg:number;price_per_kg:number;gross_value:number;transport_cost:number;net_value:number;sold_at:string};
+type Price = {id:string;price_per_kg:number;effective_at:string};
+type CashEntry = {id:string;entry_type:string;category:string;amount:number;notes?:string|null;created_by:string;created_at:string};
+type Maintenance = {id:string;inspection_type:string;finding?:string|null;action_taken?:string|null;critical:boolean;inspected_by:string;inspected_at:string};
+type Audit = {id:string;actor:string;action:string;entity_type:string;entity_id?:string|null;created_at:string};

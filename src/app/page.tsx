@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p></div><div className="footer-links"><Link href="/daftar">Daftar anggota</Link><Link href="/anggota/masuk">Portal anggota</Link><Link href="/login">Pengelola</Link></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
+      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p><div className="creator-credit"><span>Created by:</span><strong>#Prodi Sistem Informasi</strong><strong>#FIK-UBP Karawang</strong></div></div><div className="footer-links"><Link href="/daftar">Daftar anggota</Link><Link href="/anggota/masuk">Portal anggota</Link><Link href="/login">Pengelola</Link></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
     </main>
   );
 }

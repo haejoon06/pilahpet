@@ -25,9 +25,14 @@ export async function PATCH(request: Request, context: RouteContext<"/api/applic
 
   const memberCode = `PET-${Date.now().toString(36).toUpperCase()}`;
   const accessPin = randomInt(0, 1_000_000).toString().padStart(6, "0");
-  const [member] = await sql`INSERT INTO members(location_id, member_code, name, area, phone, account_type, benefit_mode)
-    VALUES(${location!.id}, ${memberCode}, ${application.name}, ${application.area}, ${application.phone},
-      ${application.account_type}, ${application.benefit_mode}) RETURNING id, member_code, name`;
+  const [member] = await sql`INSERT INTO members(
+      location_id, member_code, name, group_name, participant_category, rt, rw, village,
+      area, phone, account_type, benefit_mode
+    ) VALUES(
+      ${location!.id}, ${memberCode}, ${application.name}, ${application.group_name},
+      ${application.participant_category}, ${application.rt}, ${application.rw}, ${application.village},
+      ${application.area}, ${application.phone}, ${application.account_type}, ${application.benefit_mode}
+    ) RETURNING id, member_code, name`;
   await sql`INSERT INTO member_credentials(member_id, pin_hash) VALUES(${member.id}, ${hashMemberPin(accessPin)})`;
   await sql`UPDATE member_applications SET status = 'approved', member_id = ${member.id}, notes = ${parsed.data.notes || null},
     reviewed_by = ${session.role}, reviewed_at = now() WHERE id = ${id}`;

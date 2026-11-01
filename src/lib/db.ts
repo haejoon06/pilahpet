@@ -25,7 +25,8 @@ export async function getDashboardData() {
       (SELECT COALESCE(sum(net_weight_kg),0)::float8 FROM deposits WHERE location_id = ${location.id} AND status = 'confirmed') AS collected_kg
   `;
   const [members, deposits, prices, applications, sales, cashEntries, maintenance, audits] = await Promise.all([
-    sql`SELECT m.id, m.member_code, m.name, m.area, m.phone, m.account_type, m.benefit_mode,
+    sql`SELECT m.id, m.member_code, m.name, m.group_name, m.participant_category, m.rt, m.rw,
+      m.village, m.area, m.phone, m.account_type, m.benefit_mode,
       COALESCE(sum(bl.amount),0)::float8 AS balance
       FROM members m LEFT JOIN benefit_ledger bl ON bl.member_id = m.id
       WHERE m.location_id = ${location.id} AND m.active = true
@@ -37,7 +38,8 @@ export async function getDashboardData() {
     sql`SELECT ph.id, ph.price_per_kg::float8, ph.effective_at
       FROM price_history ph JOIN material_categories mc ON mc.id = ph.material_id
       WHERE ph.location_id = ${location.id} AND mc.code = 'PET-1' ORDER BY effective_at DESC LIMIT 20`,
-    sql`SELECT id, application_code, name, area, phone, account_type, benefit_mode, status, notes, created_at
+    sql`SELECT id, application_code, name, group_name, participant_category, rt, rw, village,
+      area, phone, account_type, benefit_mode, status, notes, created_at
       FROM member_applications WHERE location_id = ${location.id} ORDER BY created_at DESC LIMIT 100`,
     sql`SELECT s.id, b.name AS buyer_name, s.weight_kg::float8, s.price_per_kg::float8,
       s.gross_value::float8, s.transport_cost::float8, s.net_value::float8, s.sold_at

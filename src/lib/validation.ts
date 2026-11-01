@@ -2,7 +2,12 @@ import { z } from "zod";
 
 export const roleSchema = z.enum(["operator", "treasurer", "supervisor", "admin"]);
 export const memberSchema = z.object({
-  name: z.string().trim().min(2).max(120), area: z.string().trim().min(1).max(120),
+  name: z.string().trim().min(2, "Nama lengkap minimal 2 karakter").max(120),
+  groupName: z.string().trim().max(120).optional().or(z.literal("")),
+  participantCategory: z.enum(["elementary", "junior_high", "senior_high", "adult"]),
+  rt: z.string().trim().regex(/^\d{1,3}$/, "RT harus berupa 1–3 angka"),
+  rw: z.string().trim().regex(/^\d{1,3}$/, "RW harus berupa 1–3 angka"),
+  village: z.string().trim().min(2, "Nama desa/kelurahan minimal 2 karakter").max(120),
   phone: z.string().trim().max(30).optional().or(z.literal("")),
   accountType: z.enum(["individual", "group"]), benefitMode: z.enum(["individual_balance", "group_cash"]),
 });

@@ -26,9 +26,9 @@ export default async function DashboardPage() {
   </main>;
 }
 
-type Member = {id:string;member_code:string;name:string;area:string;phone?:string|null;account_type:string;benefit_mode:string;balance:number};
+type Member = {id:string;member_code:string;name:string;group_name?:string|null;participant_category:string;rt?:string|null;rw?:string|null;village?:string|null;area:string;phone?:string|null;account_type:string;benefit_mode:string;balance:number};
 type Deposit = {id:string;member_name:string;member_code:string;net_weight_kg:number;price_snapshot:number;total_value:number;status:string;confirmed_at:string;rejection_reason?:string|null};
-type Application = {id:string;application_code:string;name:string;area:string;phone:string;account_type:string;benefit_mode:string;status:string;notes?:string|null;created_at:string};
+type Application = {id:string;application_code:string;name:string;group_name?:string|null;participant_category:string;rt?:string|null;rw?:string|null;village?:string|null;area:string;phone:string;account_type:string;benefit_mode:string;status:string;notes?:string|null;created_at:string};
 type Sale = {id:string;buyer_name:string;weight_kg:number;price_per_kg:number;gross_value:number;transport_cost:number;net_value:number;sold_at:string};
 type Price = {id:string;price_per_kg:number;effective_at:string};
 type CashEntry = {id:string;entry_type:string;category:string;amount:number;notes?:string|null;created_by:string;created_at:string};

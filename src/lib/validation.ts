@@ -39,3 +39,39 @@ export const maintenanceSchema = z.object({
 });
 export const memberLoginSchema = z.object({ memberCode: z.string().trim().min(4).max(40), pin: z.string().regex(/^\d{6}$/, "PIN harus 6 digit") });
 
+const identityNumber = z.string().trim().transform((value) => value.replace(/\D/g, "")).pipe(z.string().length(16, "Nomor harus tepat 16 digit"));
+const regionNumber = z.string().trim().regex(/^\d{1,3}$/, "Harus berupa 1–3 angka");
+
+export const householdSchema = z.object({
+  familyCardNumber: identityNumber,
+  headName: z.string().trim().min(2).max(120),
+  address: z.string().trim().min(3).max(300),
+  rt: regionNumber,
+  rw: regionNumber,
+  postalCode: z.string().trim().regex(/^\d{5}$/, "Kode pos harus 5 digit").optional().or(z.literal("")),
+  village: z.string().trim().min(2).max(120),
+  subdistrict: z.string().trim().min(2).max(120),
+  regency: z.string().trim().min(2).max(120),
+  province: z.string().trim().min(2).max(120),
+  issuedAt: z.string().date().optional().or(z.literal("")),
+});
+
+export const residentSchema = z.object({
+  householdId: z.string().uuid(),
+  nik: identityNumber,
+  fullName: z.string().trim().min(2).max(120),
+  gender: z.enum(["male", "female"]),
+  birthPlace: z.string().trim().min(2).max(120),
+  birthDate: z.string().date(),
+  religion: z.string().trim().min(2).max(60),
+  education: z.string().trim().min(1).max(120),
+  occupation: z.string().trim().min(1).max(120),
+  bloodType: z.enum(["A", "B", "AB", "O", "unknown"]),
+  maritalStatus: z.string().trim().min(2).max(60),
+  marriageDate: z.string().date().optional().or(z.literal("")),
+  familyRelationship: z.string().trim().min(2).max(80),
+  citizenship: z.string().trim().min(2).max(20),
+  fatherName: z.string().trim().max(120).optional().or(z.literal("")),
+  motherName: z.string().trim().max(120).optional().or(z.literal("")),
+});
+

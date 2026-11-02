@@ -152,7 +152,29 @@ footer { background:#0b2118; color:#cfddd5; padding:44px 0; }
 .status-card h3,.help-card h3 { margin:12px 0 5px; }
 .help-card { background:#f8f4e8; border-color:#e3dbc3; }
 .compact-form { margin-top:18px; }
+.population-stack { display:grid; gap:16px; }
+.privacy-banner { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 22px; border:1px solid #b7d6c2; border-radius:15px; background:#eaf7ee; }
+.privacy-banner strong { font-size:18px; }
+.privacy-banner p { margin:3px 0 0; color:#3e5a49; font-size:14px; max-width:780px; }
+.privacy-banner>span { white-space:nowrap; border-radius:999px; padding:7px 11px; background:#176b45; color:white; font-size:12px; font-weight:900; letter-spacing:.5px; }
+.population-head { align-items:center; }
+.result-count { white-space:nowrap; border-radius:999px; padding:8px 12px; background:#edf2ee; color:#3d5146; font-size:14px; font-weight:800; }
+.population-search { display:grid; grid-template-columns:160px 160px auto auto; gap:10px; align-items:end; margin:20px 0 26px; }
+.button.secondary { background:#edf1ee; color:#31473b; border:1px solid #c8d2cc; }
+.household-list { display:grid; gap:16px; }
+.household-card { overflow:hidden; border:1px solid var(--line); border-radius:15px; background:#fbfcfb; }
+.household-card>header { display:flex; justify-content:space-between; gap:20px; padding:20px; background:#f0f6f2; border-bottom:1px solid var(--line); }
+.household-card h3 { margin:8px 0 2px; font-size:22px; }
+.household-card header p,.household-address p { margin:2px 0; color:#4d5e55; }
+.household-card header>strong { font-size:14px; color:#176b45; white-space:nowrap; }
+.location-chip { display:inline-flex; border-radius:999px; padding:5px 9px; background:#d8f05d; color:#263a28; font-size:12px; font-weight:900; }
+.household-address { padding:14px 20px; border-bottom:1px solid var(--line); }
+.household-address small { display:block; margin-top:5px; color:#64756c; }
+.resident-table { background:white; }
+.resident-table th:first-child,.resident-table td:first-child { padding-left:20px; }
+.masked-id { color:#66776e; font-size:13px; letter-spacing:.5px; }
+.empty-inline { padding:20px; color:#66776e; }
 @media(max-width:1024px){.hero-grid{grid-template-columns:1fr 1fr;gap:38px}.metrics{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:800px){body{font-size:17px}.nav-links>a:not(.button){display:none}.hero-grid,.two-cols,.console-grid,.registration-grid{grid-template-columns:1fr}.hero-grid{gap:34px;min-height:auto}.hero{min-height:auto}.hero-card{padding:30px}.steps{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}.panel.full{grid-column:auto}.footer{align-items:flex-start;flex-direction:column}.dash-head{align-items:flex-start;flex-direction:column}.login-card{padding:32px}.nav{height:76px}.list-card{flex-direction:column}.row-actions{justify-content:flex-start}.public-form-main{padding-block:52px 72px}}
+@media(max-width:800px){body{font-size:17px}.nav-links>a:not(.button){display:none}.hero-grid,.two-cols,.console-grid,.registration-grid{grid-template-columns:1fr}.hero-grid{gap:34px;min-height:auto}.hero{min-height:auto}.hero-card{padding:30px}.steps{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}.panel.full{grid-column:auto}.footer{align-items:flex-start;flex-direction:column}.dash-head{align-items:flex-start;flex-direction:column}.login-card{padding:32px}.nav{height:76px}.list-card{flex-direction:column}.row-actions{justify-content:flex-start}.public-form-main{padding-block:52px 72px}.population-search{grid-template-columns:1fr 1fr}.privacy-banner{align-items:flex-start;flex-direction:column}.household-card>header{align-items:flex-start;flex-direction:column}}
 @media(max-width:520px){.shell{width:min(100% - 28px,1120px)}h1{font-size:43px}.lead{font-size:18px}.hero-grid{padding-block:46px}.section{padding-block:68px}.steps{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr}.metrics,.member-metrics{grid-template-columns:1fr}.inline,.download-grid{grid-template-columns:1fr}.address-grid{grid-template-columns:1fr 1fr}.address-grid .field:last-child{grid-column:1/-1}.actions{display:grid}.actions .button{width:100%}.hero-card,.panel{padding:22px}.login-card{padding:26px 22px}.dashboard h1{font-size:34px}.section-title{font-size:35px}.dash-nav .brand{font-size:21px}.nav-actions>a:not(.button){display:none}.data-table th,.data-table td{padding:12px 10px;min-width:120px}.tab-nav{margin-inline:-2px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

@@ -1,6 +1,6 @@
 # PilahPET
 
-Aplikasi PKM-Abdimas untuk pendaftaran warga, portal anggota, setoran botol minuman PET, harga, stok, manfaat, penjualan, kas, pemeliharaan alat, laporan, dan audit pada satu titik pilot.
+Aplikasi PKM-Abdimas untuk data kependudukan, pendaftaran warga, portal anggota, setoran botol minuman PET, harga, stok, manfaat, penjualan, kas, pemeliharaan alat, laporan, dan audit pada satu titik pilot.
 
 ## Fitur siap pakai
 
@@ -8,6 +8,7 @@ Aplikasi PKM-Abdimas untuk pendaftaran warga, portal anggota, setoran botol minu
 - Penerbitan kode anggota dan PIN 6 digit oleh operator.
 - Portal anggota untuk melihat berat, saldo, dan riwayat setoran.
 - Dashboard berbasis peran untuk operator, bendahara, pengawas, dan administrator.
+- Data keluarga dan penduduk dengan pencarian RT/RW, nomor KK/NIK terenkripsi, tampilan tersamarkan, serta audit akses pencatatan.
 - Setoran dengan price snapshot, stok, ledger manfaat, audit, dan pencegahan transaksi ganda.
 - Pembatalan setoran melalui jurnal reversal tanpa menghapus histori.
 - Harga PET, penjualan ke pengepul, buku kas, serta pencairan saldo individu.

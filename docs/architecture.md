@@ -29,5 +29,5 @@ Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi Po
 - Nomor KK dan NIK disimpan dengan AES-256-GCM, memiliki blind index untuk deteksi duplikasi, dan ditampilkan tersamarkan.
 - Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Administrator RT.
 - Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
-- Surat Word mengambil data dari kependudukan hanya setelah pengajuan disetujui.
+- Surat Word mengambil data dari kependudukan hanya setelah pengajuan disetujui; nomor otomatis dibuat berurutan per lokasi dan tahun melalui fungsi PostgreSQL dengan penguncian transaksi.
 - Identitas kop dan Ketua RT dikelola melalui halaman Pengaturan RT.

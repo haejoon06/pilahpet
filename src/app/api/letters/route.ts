@@ -8,9 +8,9 @@ export async function GET(request:Request){
   if(!staff&&!member)return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const location=await getLocation(); if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const sql=getSql();
-  const rows=staff?await sql`SELECT lr.id,lr.letter_type,lr.purpose,lr.extra_data,lr.status,lr.letter_number,lr.notes,lr.created_at,lr.reviewed_at,m.name AS member_name,m.member_code
+  const rows=staff?await sql`SELECT lr.id,lr.letter_type,lr.purpose,lr.extra_data,lr.status,lr.letter_number,lr.notes,lr.created_at,lr.reviewed_at,lr.reviewed_by,m.name AS member_name,m.member_code
     FROM letter_requests lr JOIN members m ON m.id=lr.member_id WHERE lr.location_id=${location.id} ORDER BY lr.created_at DESC LIMIT 300`
-    :await sql`SELECT id,letter_type,purpose,extra_data,status,letter_number,notes,created_at,reviewed_at FROM letter_requests WHERE member_id=${member!.memberId} ORDER BY created_at DESC LIMIT 100`;
+    :await sql`SELECT id,letter_type,purpose,extra_data,status,letter_number,notes,created_at,reviewed_at,reviewed_by FROM letter_requests WHERE member_id=${member!.memberId} ORDER BY created_at DESC LIMIT 100`;
   return NextResponse.json(rows);
 }
 

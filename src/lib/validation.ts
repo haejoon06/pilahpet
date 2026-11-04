@@ -97,6 +97,13 @@ export const letterRequestSchema = z.object({
   purpose: z.string().trim().min(3).max(300),
   businessName: z.string().trim().max(160).optional().or(z.literal("")),
   businessAddress: z.string().trim().max(300).optional().or(z.literal("")),
+}).superRefine((data,context)=>{
+  if(data.letterType==="business"&&!data.businessName){
+    context.addIssue({code:"custom",path:["businessName"],message:"Nama usaha wajib diisi untuk Surat Keterangan Usaha"});
+  }
+  if(data.letterType==="business"&&!data.businessAddress){
+    context.addIssue({code:"custom",path:["businessAddress"],message:"Alamat usaha wajib diisi untuk Surat Keterangan Usaha"});
+  }
 });
 
 export const letterReviewSchema = z.object({

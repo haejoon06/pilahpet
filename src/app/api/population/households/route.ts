@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 
   const sql = getSql();
   const households = await sql`SELECT id, family_card_number_last4, head_name, address, rt, rw,
-    postal_code, village, subdistrict, regency, province, issued_at, created_at
+    postal_code, village, subdistrict, regency, province, created_at
     FROM households
     WHERE location_id = ${location.id}
       AND (${rt || null}::text IS NULL OR rt = ${rt || null})
@@ -67,12 +67,12 @@ export async function POST(request: Request) {
   try {
     const [row] = await sql`INSERT INTO households(
       location_id, family_card_number_encrypted, family_card_number_hash, family_card_number_last4,
-      head_name, address, rt, rw, postal_code, village, subdistrict, regency, province, issued_at, created_by
+      head_name, address, rt, rw, postal_code, village, subdistrict, regency, province, created_by
     ) VALUES(
       ${location.id}, ${encryptIdentityNumber(data.familyCardNumber)}, ${identityBlindIndex(data.familyCardNumber)},
       ${lastFour(data.familyCardNumber)}, ${data.headName}, ${data.address}, ${data.rt}, ${data.rw},
       ${data.postalCode || null}, ${data.village}, ${data.subdistrict}, ${data.regency}, ${data.province},
-      ${data.issuedAt || null}, ${session.role}
+      ${session.role}
     ) RETURNING id, head_name, rt, rw, village`;
     await sql`INSERT INTO audit_logs(location_id, actor, action, entity_type, entity_id, after_data)
       VALUES(${location.id}, ${session.role}, 'household.create', 'household', ${row.id},

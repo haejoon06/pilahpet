@@ -174,9 +174,16 @@ footer { background:#0b2118; color:#cfddd5; padding:44px 0; }
 .resident-table th:first-child,.resident-table td:first-child { padding-left:20px; }
 .masked-id { color:#66776e; font-size:13px; letter-spacing:.5px; }
 .empty-inline { padding:20px; color:#66776e; }
+.date-select-field { margin:0; padding:0; border:0; min-width:0; }
+.date-select-field legend { margin-bottom:8px; color:#22362b; font-size:15px; font-weight:800; }
+.birth-row { grid-template-columns:.72fr 1.28fr; }
+.date-select-grid { display:grid; grid-template-columns:.72fr 1.35fr 1fr; gap:8px; }
+.date-select-grid>div { display:grid; gap:5px; min-width:0; }
+.date-select-grid label { color:#64766c; font-size:12px; font-weight:700; }
+.date-select-grid select { min-width:0; }
 @media(max-width:1024px){.hero-grid{grid-template-columns:1fr 1fr;gap:38px}.metrics{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:800px){body{font-size:17px}.nav-links>a:not(.button){display:none}.hero-grid,.two-cols,.console-grid,.registration-grid{grid-template-columns:1fr}.hero-grid{gap:34px;min-height:auto}.hero{min-height:auto}.hero-card{padding:30px}.steps{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr 1fr}.panel.full{grid-column:auto}.footer{align-items:flex-start;flex-direction:column}.dash-head{align-items:flex-start;flex-direction:column}.login-card{padding:32px}.nav{height:76px}.list-card{flex-direction:column}.row-actions{justify-content:flex-start}.public-form-main{padding-block:52px 72px}.population-search{grid-template-columns:1fr 1fr}.privacy-banner{align-items:flex-start;flex-direction:column}.household-card>header{align-items:flex-start;flex-direction:column}}
-@media(max-width:520px){.shell{width:min(100% - 28px,1120px)}h1{font-size:43px}.lead{font-size:18px}.hero-grid{padding-block:46px}.section{padding-block:68px}.steps{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr}.metrics,.member-metrics{grid-template-columns:1fr}.inline,.download-grid{grid-template-columns:1fr}.address-grid{grid-template-columns:1fr 1fr}.address-grid .field:last-child{grid-column:1/-1}.actions{display:grid}.actions .button{width:100%}.hero-card,.panel{padding:22px}.login-card{padding:26px 22px}.dashboard h1{font-size:34px}.section-title{font-size:35px}.dash-nav .brand{font-size:21px}.nav-actions>a:not(.button){display:none}.data-table th,.data-table td{padding:12px 10px;min-width:120px}.tab-nav{margin-inline:-2px}}
+@media(max-width:520px){.shell{width:min(100% - 28px,1120px)}h1{font-size:43px}.lead{font-size:18px}.hero-grid{padding-block:46px}.section{padding-block:68px}.steps{grid-template-columns:1fr}.stat-row{grid-template-columns:1fr}.metrics,.member-metrics{grid-template-columns:1fr}.inline,.download-grid{grid-template-columns:1fr}.address-grid{grid-template-columns:1fr 1fr}.address-grid .field:last-child{grid-column:1/-1}.date-select-grid{grid-template-columns:.72fr 1.25fr 1fr}.actions{display:grid}.actions .button{width:100%}.hero-card,.panel{padding:22px}.login-card{padding:26px 22px}.dashboard h1{font-size:34px}.section-title{font-size:35px}.dash-nav .brand{font-size:21px}.nav-actions>a:not(.button){display:none}.data-table th,.data-table td{padding:12px 10px;min-width:120px}.tab-nav{margin-inline:-2px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 /* RT SMART public portal */

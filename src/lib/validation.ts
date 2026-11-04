@@ -48,12 +48,11 @@ export const householdSchema = z.object({
   address: z.string().trim().min(3).max(300),
   rt: regionNumber,
   rw: regionNumber,
-  postalCode: z.string().trim().regex(/^\d{5}$/, "Kode pos harus 5 digit").optional().or(z.literal("")),
+  postalCode: z.string().trim().regex(/^\d{5}$/, "Kode pos harus 5 digit"),
   village: z.string().trim().min(2).max(120),
   subdistrict: z.string().trim().min(2).max(120),
   regency: z.string().trim().min(2).max(120),
   province: z.string().trim().min(2).max(120),
-  issuedAt: z.string().date().optional().or(z.literal("")),
 });
 
 export const residentSchema = z.object({
@@ -62,7 +61,11 @@ export const residentSchema = z.object({
   fullName: z.string().trim().min(2).max(120),
   gender: z.enum(["male", "female"]),
   birthPlace: z.string().trim().min(2).max(120),
-  birthDate: z.string().date(),
+  birthDate: z.string().date().refine((value) => {
+    const date = new Date(`${value}T00:00:00Z`);
+    const year = date.getUTCFullYear();
+    return !Number.isNaN(date.getTime()) && year >= 1900 && date <= new Date();
+  }, "Tanggal lahir harus valid, tidak kurang dari tahun 1900, dan tidak boleh melebihi hari ini"),
   religion: z.string().trim().min(2).max(60),
   education: z.string().trim().min(1).max(120),
   occupation: z.string().trim().min(1).max(120),

@@ -75,3 +75,39 @@ export const residentSchema = z.object({
   motherName: z.string().trim().max(120).optional().or(z.literal("")),
 });
 
+export const rtCashSchema = z.object({
+  entryType: z.enum(["income","expense"]),
+  category: z.string().trim().min(2).max(80),
+  description: z.string().trim().min(3).max(300),
+  amount: z.coerce.number().positive().max(1_000_000_000),
+  transactionDate: z.string().date(),
+});
+
+export const bottleEventSchema = z.object({
+  deviceCode: z.string().trim().min(2).max(80),
+  bottleCount: z.coerce.number().int().positive().max(1000),
+  weightKg: z.coerce.number().positive().max(1000),
+});
+
+export const letterRequestSchema = z.object({
+  letterType: z.enum(["introduction","domicile","business","indigent"]),
+  purpose: z.string().trim().min(3).max(300),
+  businessName: z.string().trim().max(160).optional().or(z.literal("")),
+  businessAddress: z.string().trim().max(300).optional().or(z.literal("")),
+});
+
+export const letterReviewSchema = z.object({
+  action: z.enum(["approve","reject"]),
+  letterNumber: z.string().trim().max(100).optional().or(z.literal("")),
+  notes: z.string().trim().max(300).optional().or(z.literal("")),
+});
+
+export const rtSettingsSchema=z.object({
+  name:z.string().trim().min(2).max(120),
+  rtNumber:regionNumber,
+  rwNumber:regionNumber,
+  village:z.string().trim().min(2).max(120),
+  address:z.string().trim().min(3).max(300),
+  chairpersonName:z.string().trim().min(2).max(120),
+});
+

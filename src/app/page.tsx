@@ -1,52 +1,17 @@
 import Link from "next/link";
 
-const accepted = ["Botol air mineral PET", "Botol teh atau minuman ringan PET", "Ukuran 330 ml–2 liter", "Kosong, bersih, dan kering"];
-const rejected = ["Kaca dan kaleng", "Plastik non-PET", "Botol masih berisi cairan", "Kemasan oli, pestisida, obat, atau bahan kimia"];
+const modules=[
+  {no:"01",title:"Data Kependudukan",copy:"Data keluarga dan warga tersimpan aman, dapat dicari berdasarkan RT/RW, dan terhubung ke akun layanan."},
+  {no:"02",title:"Keuangan Kas RT",copy:"Pemasukan, pengeluaran, dan saldo kas tercatat transparan dengan akses pengelolaan khusus pengurus RT."},
+  {no:"03",title:"Surat Menyurat",copy:"Warga mengisi formulir digital, pengurus memverifikasi, lalu sistem menghasilkan Word siap cetak."},
+  {no:"04",title:"Pilah Botol & Voucher",copy:"Sensor mencatat botol, menampilkan QR, dan voucher masuk setelah dipindai melalui akun warga."},
+];
 
-export default function Home() {
-  return (
-    <main>
-      <section className="hero">
-        <nav className="nav shell">
-          <Link className="brand" href="/">Pilah<span>PET</span></Link>
-          <div className="nav-links"><a href="#alur">Alur</a><a href="#ketentuan">Ketentuan</a><Link href="/anggota/masuk">Masuk anggota</Link><Link className="button small" href="/login">Pengelola</Link></div>
-        </nav>
-        <div className="shell hero-grid">
-          <div>
-            <p className="eyebrow">PKM-ABDimas • SATU TITIK PERCONTOHAN</p>
-            <h1>Botol PET terpilah, tercatat, dan bernilai.</h1>
-            <p className="lead">Sistem pengelolaan botol minuman PET berbasis alat press manual dan pencatatan digital untuk warga, operator, serta pengurus mitra.</p>
-            <div className="actions"><Link className="button" href="/daftar">Daftar menjadi anggota</Link><Link className="button ghost" href="/anggota/masuk">Lihat riwayat setoran</Link></div>
-            <p className="pilot-note">Lokasi pilot akan ditetapkan setelah asesmen mitra. Sensor dan IoT belum diaktifkan pada tahap pertama.</p>
-          </div>
-          <div className="hero-card" aria-label="Ringkasan material">
-            <div className="bottle" aria-hidden="true"><span>1</span><small>PET</small></div>
-            <h2>Fokus tahap pertama</h2>
-            <p>Hanya botol minuman berkode resin 1. Tutup dilepas sebelum pengepresan dan berat dicatat operator.</p>
-            <div className="stat-row"><div><strong>Manual</strong><span>alat press</span></div><div><strong>Digital</strong><span>pencatatan</span></div><div><strong>Terukur</strong><span>stok & kas</span></div></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="ketentuan" className="section shell">
-        <p className="eyebrow green">SEBELUM MENYETOR</p><h2 className="section-title">Pastikan material tepat</h2>
-        <div className="two-cols">
-          <article className="info-card accept"><h3>✓ Diterima</h3><ul>{accepted.map((item) => <li key={item}>{item}</li>)}</ul></article>
-          <article className="info-card reject"><h3>× Ditolak</h3><ul>{rejected.map((item) => <li key={item}>{item}</li>)}</ul></article>
-        </div>
-      </section>
-
-      <section id="alur" className="section muted">
-        <div className="shell"><p className="eyebrow green">ALUR LAYANAN</p><h2 className="section-title">Enam langkah yang mudah diaudit</h2>
-          <div className="steps">{[
-            ["01", "Daftar", "Warga memperoleh kode anggota."], ["02", "Periksa", "Operator memeriksa jenis dan kebersihan."],
-            ["03", "Timbang", "Berat bersih ditimbang manual."], ["04", "Catat", "Harga aktif disimpan sebagai snapshot."],
-            ["05", "Press", "Botol dipres dan masuk stok."], ["06", "Jual", "Stok, kas, dan manfaat direkonsiliasi."],
-          ].map(([no, title, copy]) => <article className="step" key={no}><span>{no}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
-        </div>
-      </section>
-
-      <footer><div className="shell footer"><div><strong>PilahPET</strong><p>Rancangan PKM-Abdimas untuk pengelolaan botol PET berbasis masyarakat.</p><div className="creator-credit"><span>Created by:</span><strong>#Prodi Sistem Informasi</strong><strong>#FIK-UBP Karawang</strong></div></div><div className="footer-links"><Link href="/daftar">Daftar anggota</Link><Link href="/anggota/masuk">Portal anggota</Link><Link href="/login">Pengelola</Link></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
-    </main>
-  );
-}
+export default function Home(){return <main className="smart-home">
+  <section className="smart-hero"><nav className="nav shell"><Link className="brand smart-brand" href="/">RT<span>SMART</span></Link><div className="nav-links"><a href="#layanan">Layanan</a><a href="#alur">Cara kerja</a><Link href="/anggota/masuk">Masuk warga</Link><Link className="button small" href="/login">Panel pengurus</Link></div></nav><div className="shell smart-hero-grid"><div><p className="eyebrow">PORTAL LAYANAN WARGA TERINTEGRASI</p><h1>Satu portal untuk RT yang lebih cerdas dan tertata.</h1><p className="lead">Kelola data warga, keuangan kas, surat menyurat, serta program pilah botol dalam sistem yang mudah digunakan pengurus dan masyarakat.</p><div className="actions"><Link className="button" href="/anggota/masuk">Masuk sebagai warga</Link><Link className="button ghost" href="/login">Masuk pengurus RT</Link></div><div className="trust-row"><span>Data terenkripsi</span><span>Akses berbasis peran</span><span>Siap di ponsel</span></div></div><div className="portal-preview"><div className="preview-top"><span>RT SMART</span><i>● Online</i></div><div className="preview-welcome"><small>Selamat datang</small><strong>Pelayanan warga, lebih dekat.</strong></div><div className="preview-grid"><div><b>128</b><span>Data warga</span></div><div><b>24</b><span>Keluarga</span></div><div><b>6</b><span>Surat diproses</span></div><div><b>42</b><span>Klaim botol</span></div></div><div className="preview-list"><p><span>✓</span> Pencarian warga RT/RW</p><p><span>✓</span> Word surat siap cetak</p><p><span>✓</span> QR voucher pilah botol</p></div></div></div></section>
+  <section className="smart-strip"><div className="shell"><p>Dari warga, oleh warga, untuk pelayanan RT yang lebih transparan.</p><div><span>SMART</span><span>MANDIRI</span><span>ADAPTIF</span><span>RAMAH LINGKUNGAN</span><span>TANGGUH</span></div></div></section>
+  <section id="layanan" className="section shell"><p className="eyebrow green">EMPAT LAYANAN UTAMA</p><div className="section-split"><h2 className="section-title">Administrasi RT dalam satu sistem.</h2><p>Dibangun bertahap agar pengurus lebih mudah bekerja dan warga memperoleh layanan yang jelas.</p></div><div className="smart-module-grid">{modules.map(item=><article key={item.no}><span>{item.no}</span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div></section>
+  <section id="alur" className="section smart-process"><div className="shell"><p className="eyebrow green">ALUR PELAYANAN</p><h2 className="section-title">Akun warga dibuat dari data RT.</h2><div className="process-grid"><article><span>1</span><h3>Pengurus mendata</h3><p>Keluarga dan penduduk dicatat melalui panel RT dengan identitas terenkripsi.</p></article><article><span>2</span><h3>Akun diterbitkan</h3><p>Pengurus membuat kode warga dan PIN yang diberikan langsung kepada pemilik data.</p></article><article><span>3</span><h3>Warga mengakses</h3><p>Warga masuk untuk mengajukan surat, melihat voucher, dan memeriksa riwayat layanan.</p></article><article><span>4</span><h3>Pengurus memproses</h3><p>Setiap layanan dikelola melalui menu khusus dan tercatat dalam audit sistem.</p></article></div></div></section>
+  <section className="section shell"><div className="smart-cta"><div><p className="eyebrow">PORTAL WARGA</p><h2>Sudah memiliki kode warga?</h2><p>Masuk untuk mengakses layanan surat, riwayat pilah botol, voucher, dan data diri.</p></div><Link className="button" href="/anggota/masuk">Buka portal warga</Link></div></section>
+  <footer><div className="shell footer"><div><strong>RT SMART</strong><p>Portal tata kelola dan layanan warga berbasis teknologi untuk program PKM-Abdimas.</p><div className="creator-credit"><span>Created by:</span><strong>#Prodi Sistem Informasi</strong><strong>#FIK-UBP Karawang</strong></div></div><div className="footer-links"><Link href="/anggota/masuk">Portal warga</Link><Link href="/login">Panel pengurus</Link><a href="#layanan">Layanan</a></div><p>Next.js • Vercel • Neon PostgreSQL</p></div></footer>
+</main>;}

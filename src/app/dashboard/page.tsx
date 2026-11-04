@@ -1,36 +1,24 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getDashboardData } from "@/lib/db";
 import { requirePageSession } from "@/lib/auth";
-import OperatorConsole from "@/components/operator-console";
+import { getLocation,getSql } from "@/lib/db";
 
-export const instant = false;
-const rupiah = (value:number) => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(value);
+export const instant=false;
+const rupiah=(value:number)=>new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(value);
 
-export default async function DashboardPage() {
-  const session = await requirePageSession();
-  let data;
-  try { data = await getDashboardData(); } catch { redirect("/?setup=database"); }
-  const m = data.metrics as {members:number;deposits:number;stock_kg:number;cash_balance:number;collected_kg:number};
-  return <main className="dashboard">
-    <header className="dash-nav"><div className="shell"><Link className="brand" href="/">Pilah<span>PET</span></Link><form action="/api/auth/logout" method="post"><button className="button small ghost" type="submit">Keluar</button></form></div></header>
-    <div className="shell dash-main">
-      <div className="dash-head"><div><span className="role-pill">{session.role.toUpperCase()}</span><h1>Dashboard pengelola</h1><p className="subtle">{data.location.name} • data operasional langsung dari Neon PostgreSQL</p></div><div><strong>{data.price ? rupiah(Number(data.price.price_per_kg)) : "Belum ditetapkan"}</strong><p className="subtle">Harga PET aktif per kg</p></div></div>
-      <section className="metrics">
-        <div className="metric"><span>ANGGOTA AKTIF</span><strong>{m.members}</strong></div><div className="metric"><span>TRANSAKSI SETORAN</span><strong>{m.deposits}</strong></div><div className="metric"><span>PET TERKUMPUL</span><strong>{Number(m.collected_kg).toFixed(2)} kg</strong></div><div className="metric"><span>STOK SAAT INI</span><strong>{Number(m.stock_kg).toFixed(2)} kg</strong></div><div className="metric"><span>SALDO KAS</span><strong>{rupiah(Number(m.cash_balance))}</strong></div>
-      </section>
-      <OperatorConsole role={session.role} members={data.members as Member[]} deposits={data.deposits as Deposit[]}
-        applications={data.applications as Application[]} sales={data.sales as Sale[]} prices={data.prices as Price[]}
-        cashEntries={data.cashEntries as CashEntry[]} maintenance={data.maintenance as Maintenance[]} audits={data.audits as Audit[]} />
-    </div>
-  </main>;
+export default async function AdminOverview(){
+  const session=await requirePageSession();const location=await getLocation();const sql=getSql();
+  const [stats]=await sql`SELECT
+    (SELECT count(*)::int FROM households WHERE location_id=${location!.id}) AS households,
+    (SELECT count(*)::int FROM residents WHERE location_id=${location!.id} AND active=true) AS residents,
+    (SELECT count(*)::int FROM members WHERE location_id=${location!.id} AND active=true) AS accounts,
+    (SELECT count(*)::int FROM letter_requests WHERE location_id=${location!.id} AND status='pending') AS pending_letters,
+    (SELECT count(*)::int FROM bottle_events WHERE location_id=${location!.id} AND status='claimed') AS bottle_claims,
+    (SELECT COALESCE(sum(CASE WHEN entry_type='income' THEN amount ELSE -amount END),0)::float8 FROM rt_cash_entries WHERE location_id=${location!.id}) AS rt_cash`;
+  const quick=[
+    {href:"/dashboard/kependudukan",title:"Data kependudukan",copy:"Keluarga, penduduk, pencarian RT/RW, dan akun warga.",roles:["admin","operator","supervisor"]},
+    {href:"/dashboard/kas",title:"Keuangan kas RT",copy:"Buku kas masuk dan keluar khusus pengelola RT.",roles:["admin","supervisor"]},
+    {href:"/dashboard/pilah-botol",title:"Pilah botol & voucher",copy:"Pantau setoran sensor, QR, klaim, dan voucher warga.",roles:["admin","operator","treasurer","supervisor"]},
+    {href:"/dashboard/surat",title:"Surat menyurat",copy:"Proses pengajuan dan unduh surat Word siap cetak.",roles:["admin","operator","supervisor"]},
+  ].filter((item)=>item.roles.includes(session.role));
+  return <div className="admin-page"><div className="admin-page-head"><div><p className="eyebrow green">PANEL PENGURUS RT</p><h1>Selamat datang di RT SMART</h1><p>Kelola pelayanan warga dalam satu panel yang tertata dan mudah diaudit.</p></div><span className="live-badge">● Sistem aktif</span></div><section className="admin-stats"><div><span>Keluarga</span><strong>{stats.households}</strong></div><div><span>Penduduk</span><strong>{stats.residents}</strong></div><div><span>Akun warga</span><strong>{stats.accounts}</strong></div><div><span>Surat menunggu</span><strong>{stats.pending_letters}</strong></div><div><span>Klaim botol</span><strong>{stats.bottle_claims}</strong></div><div><span>Saldo kas RT</span><strong>{rupiah(Number(stats.rt_cash))}</strong></div></section><section><div className="section-mini-head"><div><h2>Menu layanan</h2><p>Pilih modul untuk mulai bekerja.</p></div></div><div className="admin-module-grid">{quick.map((item)=><Link href={item.href} key={item.href}><span>→</span><h3>{item.title}</h3><p>{item.copy}</p></Link>)}</div></section></div>;
 }
-
-type Member = {id:string;member_code:string;name:string;group_name?:string|null;participant_category:string;rt?:string|null;rw?:string|null;village?:string|null;area:string;phone?:string|null;account_type:string;benefit_mode:string;balance:number};
-type Deposit = {id:string;member_name:string;member_code:string;net_weight_kg:number;price_snapshot:number;total_value:number;status:string;confirmed_at:string;rejection_reason?:string|null};
-type Application = {id:string;application_code:string;name:string;group_name?:string|null;participant_category:string;rt?:string|null;rw?:string|null;village?:string|null;area:string;phone:string;account_type:string;benefit_mode:string;status:string;notes?:string|null;created_at:string};
-type Sale = {id:string;buyer_name:string;weight_kg:number;price_per_kg:number;gross_value:number;transport_cost:number;net_value:number;sold_at:string};
-type Price = {id:string;price_per_kg:number;effective_at:string};
-type CashEntry = {id:string;entry_type:string;category:string;amount:number;notes?:string|null;created_by:string;created_at:string};
-type Maintenance = {id:string;inspection_type:string;finding?:string|null;action_taken?:string|null;critical:boolean;inspected_by:string;inspected_at:string};
-type Audit = {id:string;actor:string;action:string;entity_type:string;entity_id?:string|null;created_at:string};

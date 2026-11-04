@@ -7,7 +7,7 @@ type Resident = {
   id:string; nik_masked:string; full_name:string; gender:"male"|"female"; birth_place:string;
   birth_date:string; religion:string; education:string; occupation:string; blood_type:string;
   marital_status:string; marriage_date?:string|null; family_relationship:string; citizenship:string;
-  father_name?:string|null; mother_name?:string|null;
+  father_name?:string|null; mother_name?:string|null; member_code?:string|null;
 };
 type Household = {
   id:string; family_card_number_masked:string; head_name:string; address:string; rt:string; rw:string;
@@ -58,6 +58,13 @@ export default function PopulationPanel({ role }:{ role:Role }) {
 
   async function search(event:FormEvent<HTMLFormElement>) { event.preventDefault(); setMessage(""); await load(searchRt,searchRw); }
   async function clearSearch() { setSearchRt(""); setSearchRw(""); setMessage(""); await load(); }
+  async function createResidentAccount(resident:Resident){
+    if(!window.confirm(`Buat akun warga untuk ${resident.full_name}?`))return;
+    setBusy(true);setError(false);setMessage("Membuat akun warga…");
+    const response=await fetch(`/api/population/residents/${resident.id}/account`,{method:"POST"});const body=await response.json();setBusy(false);
+    if(!response.ok){setError(true);setMessage(body.error??"Akun belum dapat dibuat.");return;}
+    setMessage(`Akun berhasil dibuat. Kode: ${body.member_code}. PIN awal: ${body.accessPin}. Catat dan berikan langsung kepada warga.`);await load(searchRt,searchRw);
+  }
 
   return <div className="population-stack">
     <section className="privacy-banner"><div><strong>Data pribadi dilindungi</strong><p>Nomor KK dan NIK dienkripsi sebelum disimpan serta hanya ditampilkan dalam bentuk tersamarkan. Jangan mengunggah foto KK ke halaman publik.</p></div><span>AKSES TERBATAS</span></section>
@@ -90,7 +97,7 @@ export default function PopulationPanel({ role }:{ role:Role }) {
 
     <section className="panel"><div className="panel-head population-head"><div><h2>Pencarian data RT/RW</h2><p className="subtle">Isi salah satu atau keduanya untuk menyaring keluarga secara tepat.</p></div><span className="result-count">{households.length} keluarga</span></div>
       <form className="population-search" onSubmit={search}><div className="field"><label htmlFor="search-rt">Cari RT</label><input id="search-rt" inputMode="numeric" pattern="[0-9]{1,3}" value={searchRt} onChange={(event)=>setSearchRt(event.target.value)} placeholder="Contoh: 002"/></div><div className="field"><label htmlFor="search-rw">Cari RW</label><input id="search-rw" inputMode="numeric" pattern="[0-9]{1,3}" value={searchRw} onChange={(event)=>setSearchRw(event.target.value)} placeholder="Contoh: 008"/></div><button className="button dark" disabled={loading}>Cari data</button><button className="button secondary" type="button" onClick={clearSearch} disabled={loading}>Tampilkan semua</button></form>
-      {loading?<div className="empty-state">Memuat data kependudukan…</div>:households.length?<div className="household-list">{households.map((household)=><article className="household-card" key={household.id}><header><div><span className="location-chip">RT {household.rt} / RW {household.rw}</span><h3>{household.head_name}</h3><p>KK {household.family_card_number_masked}</p></div><strong>{household.residents.length} anggota</strong></header><div className="household-address"><p>{household.address}</p><p>{household.village}, {household.subdistrict}, {household.regency}, {household.province} {household.postal_code??""}</p>{household.issued_at&&<small>Diterbitkan: {displayDate(household.issued_at)}</small>}</div>{household.residents.length?<div className="table-wrap"><table className="data-table resident-table"><thead><tr><th>Nama/NIK</th><th>L/P</th><th>Lahir</th><th>Hubungan</th><th>Pendidikan</th><th>Pekerjaan</th><th>Status</th></tr></thead><tbody>{household.residents.map((resident)=><tr key={resident.id}><td><strong>{resident.full_name}</strong><br/><span className="masked-id">{resident.nik_masked}</span></td><td>{resident.gender==="male"?"L":"P"}</td><td>{resident.birth_place}<br/>{displayDate(resident.birth_date)}</td><td>{resident.family_relationship}</td><td>{resident.education}</td><td>{resident.occupation}</td><td>{resident.marital_status}</td></tr>)}</tbody></table></div>:<div className="empty-inline">Belum ada anggota keluarga.</div>}</article>)}</div>:<div className="empty-state">Tidak ada keluarga yang cocok dengan RT/RW tersebut.</div>}
+      {loading?<div className="empty-state">Memuat data kependudukan…</div>:households.length?<div className="household-list">{households.map((household)=><article className="household-card" key={household.id}><header><div><span className="location-chip">RT {household.rt} / RW {household.rw}</span><h3>{household.head_name}</h3><p>KK {household.family_card_number_masked}</p></div><strong>{household.residents.length} anggota</strong></header><div className="household-address"><p>{household.address}</p><p>{household.village}, {household.subdistrict}, {household.regency}, {household.province} {household.postal_code??""}</p>{household.issued_at&&<small>Diterbitkan: {displayDate(household.issued_at)}</small>}</div>{household.residents.length?<div className="table-wrap"><table className="data-table resident-table"><thead><tr><th>Nama/NIK</th><th>L/P</th><th>Lahir</th><th>Hubungan</th><th>Pendidikan</th><th>Pekerjaan</th><th>Status</th><th>Akun warga</th></tr></thead><tbody>{household.residents.map((resident)=><tr key={resident.id}><td><strong>{resident.full_name}</strong><br/><span className="masked-id">{resident.nik_masked}</span></td><td>{resident.gender==="male"?"L":"P"}</td><td>{resident.birth_place}<br/>{displayDate(resident.birth_date)}</td><td>{resident.family_relationship}</td><td>{resident.education}</td><td>{resident.occupation}</td><td>{resident.marital_status}</td><td>{resident.member_code?<span className="status-pill approved">{resident.member_code}</span>:canManage?<button className="text-button" disabled={busy} onClick={()=>createResidentAccount(resident)}>Buat akun</button>:"Belum ada"}</td></tr>)}</tbody></table></div>:<div className="empty-inline">Belum ada anggota keluarga.</div>}</article>)}</div>:<div className="empty-state">Tidak ada keluarga yang cocok dengan RT/RW tersebut.</div>}
     </section>
   </div>;
 }

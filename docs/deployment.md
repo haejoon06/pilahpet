@@ -7,6 +7,8 @@
 | `DATABASE_URL` | Connection string PostgreSQL dari integrasi Neon Vercel |
 | `SESSION_SECRET` | Rahasia acak minimal 32 karakter |
 | `PII_ENCRYPTION_KEY` | Kunci acak minimal 32 karakter untuk enkripsi nomor KK dan NIK; jangan diubah tanpa prosedur migrasi data |
+| `IOT_DEVICE_KEY` | Kunci rahasia perangkat sensor untuk endpoint `/api/iot/bottle-events` |
+| `VOUCHER_RATE_PER_KG` | Nilai voucher per kilogram; opsional, default `2000` |
 | `OPERATOR_ACCESS_CODE` | Kode akses operator |
 | `TREASURER_ACCESS_CODE` | Kode akses bendahara |
 | `SUPERVISOR_ACCESS_CODE` | Kode akses pengawas |
@@ -21,7 +23,7 @@ Jangan menyimpan nilai variabel tersebut di Git. Vercel mengelolanya per lingkun
 3. Tarik variabel lingkungan secara lokal atau gunakan `vercel env run`.
 4. Jalankan `node --env-file=.env.local scripts/migrate.mjs` sekali untuk setiap database baru.
 5. Jalankan `pnpm build`, lalu deploy ke produksi.
-6. Uji `/api/health`, pendaftaran warga, persetujuan operator, portal anggota, semua peran pengelola, pencarian penduduk per RT/RW, penyamaran nomor KK/NIK, setoran, reversal, harga, penjualan, kas, pencairan manfaat, pemeliharaan, dan laporan CSV.
+6. Uji `/api/health`, semua peran, pencarian RT/RW, pembuatan akun warga, kas RT, perangkat sensor, QR, klaim voucher, pengajuan surat, persetujuan, unduhan Word, dan penyamaran nomor KK/NIK.
 
 ## Pemulihan
 

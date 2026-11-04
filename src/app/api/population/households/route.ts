@@ -31,8 +31,9 @@ export async function GET(request: Request) {
   const residents = await sql`SELECT r.id, r.household_id, r.nik_last4, r.full_name, r.gender,
     r.birth_place, r.birth_date, r.religion, r.education, r.occupation, r.blood_type,
     r.marital_status, r.marriage_date, r.family_relationship, r.citizenship,
-    r.father_name, r.mother_name
+    r.father_name, r.mother_name, m.member_code
     FROM residents r JOIN households h ON h.id = r.household_id
+    LEFT JOIN members m ON m.resident_id = r.id
     WHERE r.location_id = ${location.id} AND r.active = true
       AND (${rt || null}::text IS NULL OR h.rt = ${rt || null})
       AND (${rw || null}::text IS NULL OR h.rw = ${rw || null})

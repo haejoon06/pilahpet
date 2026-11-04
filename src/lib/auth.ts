@@ -92,3 +92,10 @@ export async function requestSession(request: Request, allowed: Role[]) {
   return session?.kind === "staff" && allowed.includes(session.role) ? session : null;
 }
 
+export async function requestMemberSession(request: Request) {
+  const cookie = request.headers.get("cookie") ?? "";
+  const token = cookie.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${MEMBER_SESSION_COOKIE}=`))?.split("=")[1];
+  const session = await readSession(token);
+  return session?.kind === "member" ? session : null;
+}
+

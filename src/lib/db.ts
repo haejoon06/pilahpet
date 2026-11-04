@@ -8,8 +8,8 @@ export function getSql() {
 
 export async function getLocation() {
   const sql = getSql();
-  const rows = await sql`SELECT id, name, address FROM locations WHERE active = true ORDER BY created_at LIMIT 1`;
-  return rows[0] as { id: string; name: string; address: string | null } | undefined;
+  const rows = await sql`SELECT id, name, address,rt_number,rw_number,village,chairperson_name FROM locations WHERE active = true ORDER BY created_at LIMIT 1`;
+  return rows[0] as { id: string; name: string; address: string | null;rt_number:string|null;rw_number:string|null;village:string|null;chairperson_name:string|null } | undefined;
 }
 
 export async function getDashboardData() {
@@ -57,14 +57,23 @@ export async function getDashboardData() {
 
 export async function getMemberPortalData(memberId: string) {
   const sql = getSql();
-  const [member] = await sql`SELECT m.id, m.member_code, m.name, m.area, m.account_type, m.benefit_mode,
+  const [member] = await sql`SELECT m.id, m.member_code, m.name, m.area, m.account_type, m.benefit_mode,m.participant_category,
+    r.nik_last4,r.gender,r.birth_place,r.birth_date,r.religion,r.education,r.occupation,r.family_relationship,
+    h.address,h.rt,h.rw,h.village,h.subdistrict,h.regency,h.province,
     COALESCE(sum(bl.amount),0)::float8 AS balance
     FROM members m LEFT JOIN benefit_ledger bl ON bl.member_id = m.id
-    WHERE m.id = ${memberId} AND m.active = true GROUP BY m.id`;
+    LEFT JOIN residents r ON r.id=m.resident_id LEFT JOIN households h ON h.id=r.household_id
+    WHERE m.id = ${memberId} AND m.active = true GROUP BY m.id,r.id,h.id`;
   if (!member) throw new Error("MEMBER_NOT_FOUND");
   const deposits = await sql`SELECT id, net_weight_kg::float8, price_snapshot::float8, total_value::float8,
     status, confirmed_at, rejection_reason FROM deposits WHERE member_id = ${memberId}
     ORDER BY confirmed_at DESC LIMIT 100`;
-  return { member, deposits };
+  const [vouchers,letters,bottleEvents]=await Promise.all([
+    sql`SELECT vl.id,vl.amount::float8,vl.status,vl.created_at,be.bottle_count,be.weight_kg::float8
+      FROM voucher_ledger vl JOIN bottle_events be ON be.id=vl.bottle_event_id WHERE vl.member_id=${memberId} ORDER BY vl.created_at DESC LIMIT 100`,
+    sql`SELECT id,letter_type,purpose,status,letter_number,notes,created_at,reviewed_at FROM letter_requests WHERE member_id=${memberId} ORDER BY created_at DESC LIMIT 100`,
+    sql`SELECT id,bottle_count,weight_kg::float8,voucher_amount::float8,claimed_at,device_code FROM bottle_events WHERE claimed_by=${memberId} ORDER BY claimed_at DESC LIMIT 100`,
+  ]);
+  return { member, deposits,vouchers,letters,bottleEvents };
 }
 

@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getLocation, getSql } from "@/lib/db";
-import { publicApplicationSchema } from "@/lib/validation";
+import { getSql } from "@/lib/db";
 
 export async function GET(request: Request) {
   const code = new URL(request.url).searchParams.get("code")?.trim().toUpperCase();
@@ -14,20 +13,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const parsed = publicApplicationSchema.safeParse(await request.json().catch(() => ({})));
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });
-  const sql = getSql(); const location = await getLocation(); const data = parsed.data;
-  if (!location) return NextResponse.json({ error: "Lokasi layanan belum tersedia." }, { status: 503 });
-  const code = `REG-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2,5).toUpperCase()}`;
-  const area = `RT ${data.rt}/RW ${data.rw}, ${data.village}`;
-  const [row] = await sql`INSERT INTO member_applications(
-      location_id, application_code, name, group_name, participant_category, rt, rw, village,
-      area, phone, account_type, benefit_mode
-    ) VALUES(
-      ${location.id}, ${code}, ${data.name}, ${data.groupName || null}, ${data.participantCategory},
-      ${data.rt}, ${data.rw}, ${data.village}, ${area}, ${data.phone}, ${data.accountType}, ${data.benefitMode}
-    ) RETURNING application_code, name, status, created_at`;
-  await sql`INSERT INTO audit_logs(location_id, actor, action, entity_type, entity_id, after_data)
-    VALUES(${location.id}, 'public', 'application.create', 'member_application', null, ${JSON.stringify({ applicationCode: code, name: data.name })}::jsonb)`;
-  return NextResponse.json(row, { status: 201 });
+  void request;
+  return NextResponse.json({error:"Pendaftaran publik ditutup. Akun warga dibuat oleh pengurus RT dari data kependudukan."},{status:410});
 }

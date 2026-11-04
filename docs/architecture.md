@@ -1,10 +1,10 @@
-# Arsitektur PilahPET
+# Arsitektur RT SMART
 
-PilahPET adalah modular monolith berbasis Next.js. Halaman publik dan dashboard berjalan pada Vercel, sedangkan data persisten tersimpan di Neon PostgreSQL yang terhubung melalui `DATABASE_URL`.
+RT SMART adalah modular monolith berbasis Next.js. Portal publik, panel pengurus, dan portal warga berjalan pada Vercel, sedangkan data persisten tersimpan di Neon PostgreSQL.
 
 ## Komponen
 
-- `src/app`: halaman publik, pendaftaran warga, portal anggota, autentikasi, dashboard, dan route handler JSON/CSV.
+- `src/app`: portal publik, portal warga, panel pengurus per modul, autentikasi, endpoint IoT, dan route handler.
 - `src/lib/auth.ts`: sesi JWT HTTP-only dan pemeriksaan hak akses berbasis peran.
 - `src/lib/db.ts`: akses data Neon dengan kueri berparameter.
 - `db/migrations`: skema, indeks, seed minimum, dan fungsi transaksi atomik.
@@ -14,19 +14,20 @@ PilahPET adalah modular monolith berbasis Next.js. Halaman publik dan dashboard 
 
 | Peran | Kewenangan utama |
 |---|---|
-| Operator | Pendaftaran warga, anggota, setoran, pembatalan setoran, dan pemeliharaan |
-| Bendahara | Harga, penjualan, kas, pencairan manfaat, dan laporan |
-| Pengawas | Membaca dashboard agregat, laporan, dan audit |
-| Administrator | Seluruh fungsi operasional |
+| Petugas RT | Data warga, akun warga, surat, dan operasional pilah botol |
+| Bendahara Pilah Botol | Membaca operasional dan transaksi pilah botol |
+| Pengawas | Membaca data dan laporan tanpa melakukan perubahan |
+| Administrator RT | Seluruh modul, pengaturan RT, serta pengelolaan kas RT |
+| Warga | Profil, pengajuan surat, klaim QR, riwayat botol, dan voucher miliknya |
 
-Setiap operasi tulis memeriksa sesi di server. Setoran dan penjualan ditangani fungsi PostgreSQL agar pembaruan transaksi, stok, manfaat, kas, serta audit terjadi dalam satu transaksi.
+Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi PostgreSQL agar QR hanya dapat dipakai sekali dan pencatatan voucher berlangsung atomik.
 
 ## Keputusan desain
 
-- Harga disimpan sebagai snapshot pada setoran sehingga histori tidak berubah.
-- ID transaksi klien unik mencegah setoran ganda saat sinkronisasi ulang.
-- Pembatalan setoran memakai reversal stok dan manfaat, bukan menghapus histori.
-- Pendaftaran publik harus disetujui operator sebelum kode anggota dan PIN diterbitkan.
-- PIN anggota disimpan sebagai HMAC menggunakan rahasia sesi dan tidak ditampilkan kembali setelah diterbitkan.
-- Tabel perangkat dan telemetri sudah tersedia, tetapi fitur sensor dinonaktifkan pada versi pertama.
-- NIK tidak dikumpulkan secara default.
+- Akun warga hanya dibuat pengurus dari data penduduk; pendaftaran publik dinonaktifkan.
+- PIN warga disimpan sebagai HMAC dan hanya ditampilkan saat akun diterbitkan.
+- Nomor KK dan NIK disimpan dengan AES-256-GCM, memiliki blind index untuk deteksi duplikasi, dan ditampilkan tersamarkan.
+- Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Administrator RT.
+- Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
+- Surat Word mengambil data dari kependudukan hanya setelah pengajuan disetujui.
+- Identitas kop dan Ketua RT dikelola melalui halaman Pengaturan RT.

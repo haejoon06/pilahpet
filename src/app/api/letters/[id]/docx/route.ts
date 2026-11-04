@@ -25,13 +25,18 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
   const location=await getLocation();
   if(!location)return new Response("Lokasi belum tersedia",{status:503});
   const sql=getSql();
-  const [row]=await sql`SELECT lr.*,m.name,m.area,m.resident_id,r.nik_encrypted,r.birth_place,r.birth_date,r.gender,r.occupation,r.religion,
+  const [row]=await sql`SELECT lr.*,COALESCE(r.full_name,m.name) AS name,m.area,r.nik_encrypted,r.birth_place,r.birth_date,r.gender,r.occupation,r.religion,
     h.address,h.rt,h.rw,h.postal_code,h.village,h.subdistrict,h.regency,h.province
-    FROM letter_requests lr JOIN members m ON m.id=lr.member_id
-    LEFT JOIN residents r ON r.id=m.resident_id LEFT JOIN households h ON h.id=r.household_id
+    FROM letter_requests lr
+    LEFT JOIN members m ON m.id=lr.member_id
+    LEFT JOIN residents r ON r.id=COALESCE(lr.resident_id,m.resident_id)
+    LEFT JOIN households h ON h.id=r.household_id
     WHERE lr.id=${id} AND lr.location_id=${location.id} AND lr.status='approved'`;
   if(!row)return new Response("Surat belum disetujui atau tidak ditemukan",{status:404});
-  if(member&&row.member_id!==member.memberId)return new Response("Tidak berwenang",{status:403});
+  if(member){
+    const [owner]=await sql`SELECT resident_id FROM members WHERE id=${member.memberId}`;
+    if(row.member_id!==member.memberId&&(!owner?.resident_id||row.resident_id!==owner.resident_id))return new Response("Tidak berwenang",{status:403});
+  }
 
   const nik=row.nik_encrypted?decryptIdentityNumber(String(row.nik_encrypted)):"-";
   const address=row.address?`${row.address}, RT ${row.rt}/RW ${row.rw}, ${row.village}, ${row.subdistrict}, ${row.regency}${row.postal_code?` ${row.postal_code}`:""}`:row.area||"-";

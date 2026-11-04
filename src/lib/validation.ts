@@ -92,19 +92,27 @@ export const bottleEventSchema = z.object({
   weightKg: z.coerce.number().positive().max(1000),
 });
 
-export const letterRequestSchema = z.object({
+const letterRequestBase=z.object({
   letterType: z.enum(["introduction","domicile","business","indigent"]),
   purpose: z.string().trim().min(3).max(300),
   businessName: z.string().trim().max(160).optional().or(z.literal("")),
   businessAddress: z.string().trim().max(300).optional().or(z.literal("")),
-}).superRefine((data,context)=>{
+});
+const validateBusinessLetter=(data:z.infer<typeof letterRequestBase>,context:z.RefinementCtx)=>{
   if(data.letterType==="business"&&!data.businessName){
     context.addIssue({code:"custom",path:["businessName"],message:"Nama usaha wajib diisi untuk Surat Keterangan Usaha"});
   }
   if(data.letterType==="business"&&!data.businessAddress){
     context.addIssue({code:"custom",path:["businessAddress"],message:"Alamat usaha wajib diisi untuk Surat Keterangan Usaha"});
   }
-});
+};
+export const letterRequestSchema=letterRequestBase.superRefine(validateBusinessLetter);
+
+export const staffLetterRequestSchema=letterRequestBase.extend({
+  residentId:z.string().uuid(),
+  letterNumber:z.string().trim().max(100).optional().or(z.literal("")),
+  notes:z.string().trim().max(300).optional().or(z.literal("")),
+}).superRefine(validateBusinessLetter);
 
 export const letterReviewSchema = z.object({
   action: z.enum(["approve","reject"]),

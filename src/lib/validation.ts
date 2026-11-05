@@ -93,26 +93,52 @@ export const bottleEventSchema = z.object({
 });
 
 const letterRequestBase=z.object({
-  letterType: z.enum(["introduction","domicile","business","indigent"]),
+  letterType: z.enum(["introduction","domicile","business","indigent","police_record","marriage","crowd_permit","birth","death","loss","unmarried"]),
   purpose: z.string().trim().min(3).max(300),
   businessName: z.string().trim().max(160).optional().or(z.literal("")),
   businessAddress: z.string().trim().max(300).optional().or(z.literal("")),
+  partnerName: z.string().trim().max(160).optional().or(z.literal("")),
+  destinationOffice: z.string().trim().max(160).optional().or(z.literal("")),
+  eventName: z.string().trim().max(200).optional().or(z.literal("")),
+  eventDate: z.string().date().optional().or(z.literal("")),
+  eventTime: z.string().trim().max(80).optional().or(z.literal("")),
+  eventPlace: z.string().trim().max(300).optional().or(z.literal("")),
+  deathDate: z.string().date().optional().or(z.literal("")),
+  deathPlace: z.string().trim().max(200).optional().or(z.literal("")),
+  causeOfDeath: z.string().trim().max(200).optional().or(z.literal("")),
+  lostItem: z.string().trim().max(300).optional().or(z.literal("")),
+  incidentDate: z.string().date().optional().or(z.literal("")),
+  incidentPlace: z.string().trim().max(300).optional().or(z.literal("")),
 });
-const validateBusinessLetter=(data:z.infer<typeof letterRequestBase>,context:z.RefinementCtx)=>{
+const validateLetterDetails=(data:z.infer<typeof letterRequestBase>,context:z.RefinementCtx)=>{
   if(data.letterType==="business"&&!data.businessName){
     context.addIssue({code:"custom",path:["businessName"],message:"Nama usaha wajib diisi untuk Surat Keterangan Usaha"});
   }
   if(data.letterType==="business"&&!data.businessAddress){
     context.addIssue({code:"custom",path:["businessAddress"],message:"Alamat usaha wajib diisi untuk Surat Keterangan Usaha"});
   }
+  if(data.letterType==="crowd_permit"){
+    if(!data.eventName)context.addIssue({code:"custom",path:["eventName"],message:"Nama kegiatan wajib diisi"});
+    if(!data.eventDate)context.addIssue({code:"custom",path:["eventDate"],message:"Tanggal kegiatan wajib diisi"});
+    if(!data.eventPlace)context.addIssue({code:"custom",path:["eventPlace"],message:"Tempat kegiatan wajib diisi"});
+  }
+  if(data.letterType==="death"){
+    if(!data.deathDate)context.addIssue({code:"custom",path:["deathDate"],message:"Tanggal meninggal wajib diisi"});
+    if(!data.deathPlace)context.addIssue({code:"custom",path:["deathPlace"],message:"Tempat meninggal wajib diisi"});
+  }
+  if(data.letterType==="loss"){
+    if(!data.lostItem)context.addIssue({code:"custom",path:["lostItem"],message:"Barang atau dokumen yang hilang wajib diisi"});
+    if(!data.incidentDate)context.addIssue({code:"custom",path:["incidentDate"],message:"Tanggal kehilangan wajib diisi"});
+    if(!data.incidentPlace)context.addIssue({code:"custom",path:["incidentPlace"],message:"Perkiraan tempat kehilangan wajib diisi"});
+  }
 };
-export const letterRequestSchema=letterRequestBase.superRefine(validateBusinessLetter);
+export const letterRequestSchema=letterRequestBase.superRefine(validateLetterDetails);
 
 export const staffLetterRequestSchema=letterRequestBase.extend({
   residentId:z.string().uuid(),
   letterNumber:z.string().trim().max(100).optional().or(z.literal("")),
   notes:z.string().trim().max(300).optional().or(z.literal("")),
-}).superRefine(validateBusinessLetter);
+}).superRefine(validateLetterDetails);
 
 export const letterReviewSchema = z.object({
   action: z.enum(["approve","reject"]),

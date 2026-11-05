@@ -41,7 +41,13 @@ export async function POST(request:Request){
   }
   const data=parsed.data;
   const sql=getSql();
-  const extra={businessName:data.businessName||null,businessAddress:data.businessAddress||null};
+  const extra={
+    businessName:data.businessName||null,businessAddress:data.businessAddress||null,
+    partnerName:data.partnerName||null,destinationOffice:data.destinationOffice||null,
+    eventName:data.eventName||null,eventDate:data.eventDate||null,eventTime:data.eventTime||null,eventPlace:data.eventPlace||null,
+    deathDate:data.deathDate||null,deathPlace:data.deathPlace||null,causeOfDeath:data.causeOfDeath||null,
+    lostItem:data.lostItem||null,incidentDate:data.incidentDate||null,incidentPlace:data.incidentPlace||null,
+  };
   try{
     const [row]=await sql`SELECT * FROM create_letter_by_staff(
       ${location.id},${data.residentId},${data.letterType},${data.purpose},${JSON.stringify(extra)}::jsonb,

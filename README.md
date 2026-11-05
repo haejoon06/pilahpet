@@ -5,11 +5,11 @@ Portal PKM-Abdimas untuk tata kelola RT: data kependudukan, akun warga, kas RT, 
 ## Fitur siap pakai
 
 - Akun warga dibuat pengurus dari data penduduk dan dilengkapi PIN 6 digit.
-- Portal warga untuk profil, pengajuan surat, setoran sensor, dan voucher.
+- Portal warga untuk profil, riwayat surat yang dibuat RT, setoran sensor, dan voucher.
 - Panel pengurus dengan halaman terpisah untuk setiap modul layanan.
 - Data keluarga dan penduduk dengan pencarian RT/RW, nomor KK/NIK terenkripsi, tampilan tersamarkan, serta audit akses pencatatan.
 - Buku kas RT terpisah dengan hak perubahan khusus Administrator RT.
-- Pencatatan surat oleh pengurus saat warga datang ke RT, penomoran berurutan, pencarian/filter, dan Word siap cetak yang terisi otomatis.
+- Pencatatan surat oleh pengurus saat warga datang ke RT, panduan dokumen, penomoran berurutan, pencarian/filter, dan Word siap cetak yang terisi otomatis. Jenisnya mencakup pengantar umum, domisili, usaha, tidak mampu, SKCK, nikah, izin keramaian, kelahiran, kematian, kehilangan, dan belum menikah.
 - Endpoint perangkat sensor, QR sekali pakai, klaim warga, dan ledger voucher.
 - Pengaturan identitas RT untuk kop surat dan penandatangan.
 - Antarmuka responsif untuk ponsel, tablet, dan komputer.

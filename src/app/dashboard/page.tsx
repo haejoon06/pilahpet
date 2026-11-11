@@ -15,7 +15,7 @@ export default async function AdminOverview(){
     (SELECT count(*)::int FROM bottle_events WHERE location_id=${location!.id} AND status='claimed') AS bottle_claims,
     (SELECT COALESCE(sum(CASE WHEN entry_type='income' THEN amount ELSE -amount END),0)::float8 FROM rt_cash_entries WHERE location_id=${location!.id}) AS rt_cash`;
   const quick=[
-    {href:"/dashboard/kependudukan",title:"Data kependudukan",copy:"Keluarga, penduduk, pencarian RT/RW, dan akun warga.",roles:["chairperson","secretary","admin"]},
+    {href:"/dashboard/kependudukan",title:"Data kependudukan",copy:"Keluarga, penduduk, wilayah otomatis, dan akun warga.",roles:["chairperson","secretary","admin"]},
     {href:"/dashboard/kas",title:"Keuangan kas RT",copy:"Buku kas masuk dan keluar khusus pengelola RT.",roles:["chairperson","treasurer","admin"]},
     {href:"/dashboard/pilah-botol",title:"Pilah botol & voucher",copy:"Pantau setoran sensor, QR, klaim, dan voucher warga.",roles:["chairperson","admin","waste_manager"]},
     {href:"/dashboard/surat",title:"Surat menyurat",copy:"Proses pengajuan dan unduh surat Word siap cetak.",roles:["chairperson","secretary","admin"]},

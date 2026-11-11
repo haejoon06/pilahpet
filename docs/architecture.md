@@ -14,7 +14,7 @@ RT SMART adalah modular monolith berbasis Next.js. Portal publik, panel pengurus
 
 | Peran | Kewenangan utama |
 |---|---|
-| Ketua RT | Memantau seluruh layanan serta menangani administrasi surat |
+| Ketua RT | Memantau seluruh layanan, menangani administrasi surat, dan mengatur identitas RT |
 | Sekretaris | Mengelola data warga, akun warga, dan surat-menyurat |
 | Bendahara | Mengelola pemasukan dan pengeluaran kas RT |
 | Admin | Seluruh modul, akun, konfigurasi, dan pengaturan RT |
@@ -32,4 +32,4 @@ Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi Po
 - Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
 - Surat dicatat langsung oleh pengurus dengan memilih penduduk; jenis surat memiliki isian khusus dan panduan dokumen, Word mengambil data kependudukan secara otomatis, dan nomor dibuat berurutan per lokasi dan tahun melalui fungsi PostgreSQL dengan penguncian transaksi.
 - Dasar pemilihan jenis dan redaksi surat dicatat pada `docs/letter-references.md`; seluruh template diposisikan sebagai pengantar atau keterangan lingkungan, bukan pengganti dokumen instansi berwenang.
-- Identitas kop dan Ketua RT dikelola melalui halaman Pengaturan RT.
+- Identitas kop dan Ketua RT dikelola oleh Ketua RT atau Admin melalui halaman Pengaturan RT.

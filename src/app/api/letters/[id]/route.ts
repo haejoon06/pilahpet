@@ -9,7 +9,7 @@ export async function PATCH(request:Request,context:RouteContext<"/api/letters/[
   const {id}=await context.params;const location=await getLocation();if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const data=parsed.data;const status=data.action==="approve"?"approved":"rejected";const sql=getSql();
   if(data.action==="approve"&&(!location.rt_number||!location.rw_number||!location.village||!location.address||!location.chairperson_name)){
-    return NextResponse.json({error:"Lengkapi RT, RW, desa, alamat sekretariat, dan nama Ketua RT pada menu Pengaturan RT sebelum menyetujui surat."},{status:400});
+    return NextResponse.json({error:"Identitas RT belum tersimpan. Minta Ketua RT atau Admin melengkapi RT, RW, desa, alamat sekretariat, dan nama Ketua RT pada menu Pengaturan RT."},{status:400});
   }
   let row:Record<string,unknown>|undefined;
   try{

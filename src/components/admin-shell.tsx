@@ -9,7 +9,7 @@ const items:Array<{href:string;label:string;icon:string;roles:Role[]}>= [
   {href:"/dashboard/kas",label:"Keuangan Kas RT",icon:"Rp",roles:["chairperson","treasurer","admin"]},
   {href:"/dashboard/pilah-botol",label:"Pilah Botol & QR",icon:"♻",roles:["chairperson","admin","waste_manager"]},
   {href:"/dashboard/surat",label:"Surat Menyurat",icon:"✉",roles:["chairperson","secretary","admin"]},
-  {href:"/dashboard/pengaturan",label:"Pengaturan RT",icon:"⚙",roles:["admin"]},
+  {href:"/dashboard/pengaturan",label:"Pengaturan RT",icon:"⚙",roles:["chairperson","admin"]},
 ];
 
 export default function AdminShell({role,children}:{role:Role;children:React.ReactNode}){

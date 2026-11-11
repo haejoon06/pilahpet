@@ -4,7 +4,7 @@ import { getLocation,getSql } from "@/lib/db";
 import { staffLetterRequestSchema } from "@/lib/validation";
 
 export async function GET(request:Request){
-  const staff=await requestSession(request,["operator","supervisor","admin"]);
+  const staff=await requestSession(request,["chairperson","secretary","admin"]);
   const member=staff?null:await requestMemberSession(request);
   if(!staff&&!member)return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const location=await getLocation();
@@ -30,7 +30,7 @@ export async function GET(request:Request){
 }
 
 export async function POST(request:Request){
-  const session=await requestSession(request,["operator","admin"]);
+  const session=await requestSession(request,["chairperson","secretary","admin"]);
   if(!session)return NextResponse.json({error:"Pencatatan surat hanya dapat dilakukan oleh pengurus RT."},{status:401});
   const parsed=staffLetterRequestSchema.safeParse(await request.json().catch(()=>({})));
   if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message},{status:400});

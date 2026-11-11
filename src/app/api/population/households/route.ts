@@ -7,7 +7,7 @@ import { householdSchema } from "@/lib/validation";
 const validRegion = (value: string) => /^\d{1,3}$/.test(value);
 
 export async function GET(request: Request) {
-  const session = await requestSession(request, ["operator", "supervisor", "admin"]);
+  const session = await requestSession(request, ["chairperson", "secretary", "admin"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const location = await getLocation();
   if (!location) return NextResponse.json({ error: "Lokasi layanan belum tersedia." }, { status: 503 });
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await requestSession(request, ["operator", "admin"]);
+  const session = await requestSession(request, ["secretary", "admin"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const parsed = householdSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });

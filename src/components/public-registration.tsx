@@ -32,7 +32,7 @@ export default function PublicRegistration() {
   const categoryLabel = (category: string) => ({ elementary: "SD", junior_high: "SMP", senior_high: "SMA/SMK", adult: "Dewasa" }[category] ?? category);
 
   return <div className="registration-grid">
-    <section className="panel public-panel"><h2>Formulir pendaftaran</h2><p className="subtle">Data akan diperiksa operator sebelum akun anggota diterbitkan.</p>
+    <section className="panel public-panel"><h2>Formulir pendaftaran</h2><p className="subtle">Data akan diperiksa pengurus sebelum akun anggota diterbitkan.</p>
       <form className="form" onSubmit={register}>
         <div className="field"><label htmlFor="name">Nama lengkap</label><input id="name" name="name" autoComplete="name" required minLength={2} /></div>
         <div className="inline"><div className="field"><label htmlFor="groupName">Nama kelompok atau instansi <span className="optional">(opsional)</span></label><input id="groupName" name="groupName" placeholder="Contoh: SDN Karawang 1, Karang Taruna" /></div><div className="field"><label htmlFor="participantCategory">Kategori peserta</label><select id="participantCategory" name="participantCategory" required><option value="elementary">Anak SD</option><option value="junior_high">Anak SMP</option><option value="senior_high">SMA/SMK</option><option value="adult">Dewasa</option></select></div></div>
@@ -45,7 +45,7 @@ export default function PublicRegistration() {
     </section>
     <aside className="panel public-panel"><h2>Cek status</h2><p className="subtle">Masukkan kode REG yang diterima setelah mendaftar.</p>
       <form className="form compact-form" onSubmit={checkStatus}><div className="field"><label htmlFor="code">Kode pendaftaran</label><input id="code" name="code" placeholder="REG-..." required /></div><button className="button dark">Periksa status</button></form>
-      {check && <div className="status-card" role="status"><span className={`status-pill ${check.status}`}>{statusLabel(check.status)}</span><h3>{check.name}</h3>{check.group_name && <p>Kelompok: <strong>{check.group_name}</strong></p>}<p>{categoryLabel(check.participant_category)} • RT {check.rt ?? "-"}/RW {check.rw ?? "-"} • {check.village ?? "-"}</p><p>Kode: <strong>{check.application_code}</strong></p>{check.notes && <p>Catatan operator: {check.notes}</p>}</div>}
+      {check && <div className="status-card" role="status"><span className={`status-pill ${check.status}`}>{statusLabel(check.status)}</span><h3>{check.name}</h3>{check.group_name && <p>Kelompok: <strong>{check.group_name}</strong></p>}<p>{categoryLabel(check.participant_category)} • RT {check.rt ?? "-"}/RW {check.rw ?? "-"} • {check.village ?? "-"}</p><p>Kode: <strong>{check.application_code}</strong></p>{check.notes && <p>Catatan pengurus: {check.notes}</p>}</div>}
       {message && <p className="message error" role="alert">{message}</p>}
       <div className="help-card"><h3>Setelah disetujui</h3><p>Operator memberikan kode anggota dan PIN 6 digit. Keduanya dipakai untuk membuka portal anggota dan melihat riwayat setoran.</p></div>
     </aside>

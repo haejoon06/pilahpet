@@ -39,7 +39,7 @@ const occupationOptions = [
 ];
 
 export default function PopulationPanel({ role }:{ role:Role }) {
-  const canManage = role === "operator" || role === "admin";
+  const canManage = role === "secretary" || role === "admin";
   const [households,setHouseholds] = useState<Household[]>([]);
   const [loading,setLoading] = useState(true);
   const [busy,setBusy] = useState(false);

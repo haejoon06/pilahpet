@@ -2,19 +2,21 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { jwtVerify, SignJWT } from "jose";
+import { STAFF_ROLES, type Role } from "@/lib/roles";
 
 export const SESSION_COOKIE = "pilahpet_session";
 export const MEMBER_SESSION_COOKIE = "pilahpet_member_session";
-export type Role = "operator" | "treasurer" | "supervisor" | "admin";
+export type { Role } from "@/lib/roles";
 export type StaffSession = { kind: "staff"; role: Role; issuedAt: number };
 export type MemberSession = { kind: "member"; memberId: string; issuedAt: number };
 export type Session = StaffSession | MemberSession;
 
 const roleCodes: Record<Role, string | undefined> = {
-  operator: process.env.OPERATOR_ACCESS_CODE,
+  chairperson: process.env.CHAIRPERSON_ACCESS_CODE,
+  secretary: process.env.SECRETARY_ACCESS_CODE,
   treasurer: process.env.TREASURER_ACCESS_CODE,
-  supervisor: process.env.SUPERVISOR_ACCESS_CODE,
   admin: process.env.ADMIN_ACCESS_CODE,
+  waste_manager: process.env.WASTE_MANAGER_ACCESS_CODE,
 };
 
 function key() {
@@ -62,7 +64,7 @@ export async function readSession(token?: string | null): Promise<Session | null
       return { kind: "member", memberId: payload.memberId, issuedAt: Number(payload.issuedAt ?? 0) };
     }
     const role = payload.role as Role;
-    if (!role || !["operator", "treasurer", "supervisor", "admin"].includes(role)) return null;
+    if (!role || !STAFF_ROLES.includes(role)) return null;
     return { kind: "staff", role, issuedAt: Number(payload.issuedAt ?? 0) };
   } catch { return null; }
 }

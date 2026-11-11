@@ -6,7 +6,7 @@ import { getLocation,getSql } from "@/lib/db";
 function category(birthDate:string){const age=Math.floor((Date.now()-new Date(birthDate).getTime())/31557600000);return age<13?"elementary":age<16?"junior_high":age<19?"senior_high":"adult";}
 
 export async function POST(request:Request,context:RouteContext<"/api/population/residents/[id]/account">){
-  const session=await requestSession(request,["operator","admin"]); if(!session)return NextResponse.json({error:"Tidak berwenang"},{status:401});
+  const session=await requestSession(request,["secretary","admin"]); if(!session)return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const {id}=await context.params; const location=await getLocation(); if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const sql=getSql();
   const [resident]=await sql`SELECT r.id,r.full_name,r.birth_date,h.rt,h.rw,h.village

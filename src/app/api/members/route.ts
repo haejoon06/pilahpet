@@ -5,7 +5,7 @@ import { getLocation, getSql } from "@/lib/db";
 import { memberSchema } from "@/lib/validation";
 
 export async function GET(request: Request) {
-  const session = await requestSession(request, ["operator", "treasurer", "supervisor", "admin"]);
+  const session = await requestSession(request, ["chairperson", "admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const sql = getSql(); const location = await getLocation();
   const rows = await sql`SELECT id, member_code, name, group_name, participant_category, rt, rw, village,
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await requestSession(request, ["operator", "admin"]);
+  const session = await requestSession(request, ["admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const parsed = memberSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });

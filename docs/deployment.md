@@ -9,10 +9,11 @@
 | `PII_ENCRYPTION_KEY` | Kunci acak minimal 32 karakter untuk enkripsi nomor KK dan NIK; jangan diubah tanpa prosedur migrasi data |
 | `IOT_DEVICE_KEY` | Kunci rahasia perangkat sensor untuk endpoint `/api/iot/bottle-events` |
 | `VOUCHER_RATE_PER_KG` | Nilai voucher per kilogram; opsional, default `2000` |
-| `OPERATOR_ACCESS_CODE` | Kode akses operator |
+| `CHAIRPERSON_ACCESS_CODE` | Kode akses Ketua RT |
+| `SECRETARY_ACCESS_CODE` | Kode akses Sekretaris |
 | `TREASURER_ACCESS_CODE` | Kode akses bendahara |
-| `SUPERVISOR_ACCESS_CODE` | Kode akses pengawas |
-| `ADMIN_ACCESS_CODE` | Kode akses administrator |
+| `ADMIN_ACCESS_CODE` | Kode akses Admin |
+| `WASTE_MANAGER_ACCESS_CODE` | Kode akses Pengelola Sampah Botol |
 
 Jangan menyimpan nilai variabel tersebut di Git. Vercel mengelolanya per lingkungan.
 

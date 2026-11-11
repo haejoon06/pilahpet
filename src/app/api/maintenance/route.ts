@@ -4,7 +4,7 @@ import { getLocation, getSql } from "@/lib/db";
 import { maintenanceSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
-  const session = await requestSession(request, ["operator", "admin"]);
+  const session = await requestSession(request, ["admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const parsed = maintenanceSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });

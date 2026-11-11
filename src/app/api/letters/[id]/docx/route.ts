@@ -18,7 +18,7 @@ const formatDate=(value:unknown,withTime=false)=>{
 const cleanPlace=(value:string)=>value.replace(/^(kabupaten|kota)\s+/i,"").trim();
 
 export async function GET(request:Request,context:RouteContext<"/api/letters/[id]/docx">){
-  const staff=await requestSession(request,["operator","supervisor","admin"]);
+  const staff=await requestSession(request,["chairperson","secretary","admin"]);
   const member=staff?null:await requestMemberSession(request);
   if(!staff&&!member)return new Response("Tidak berwenang",{status:401});
   const {id}=await context.params;

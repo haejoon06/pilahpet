@@ -22,7 +22,7 @@ export default function LoginPage() {
     <Link className="brand smart-brand" href="/">RT<span>SMART</span></Link>
     <p className="eyebrow green auth-eyebrow">KHUSUS PENGURUS RT</p><h1>Masuk panel pengurus</h1><p>Pilih peran dan masukkan kode akses pengelola.</p>
     <form className="form" onSubmit={submit}>
-      <div className="field"><label htmlFor="role">Peran</label><select id="role" name="role" defaultValue="operator"><option value="operator">Petugas RT</option><option value="treasurer">Bendahara Pilah Botol</option><option value="supervisor">Pengawas</option><option value="admin">Administrator RT</option></select></div>
+      <div className="field"><label htmlFor="role">Peran</label><select id="role" name="role" defaultValue="chairperson"><option value="chairperson">Ketua RT</option><option value="secretary">Sekretaris</option><option value="treasurer">Bendahara</option><option value="admin">Admin</option><option value="waste_manager">Pengelola Sampah Botol</option></select></div>
       <div className="field"><label htmlFor="code">Kode akses</label><input id="code" name="code" type="password" autoComplete="current-password" required minLength={8} /></div>
       {message && <p className="message error" role="alert">{message}</p>}
       <button className="button dark" type="submit" disabled={busy}>{busy ? "Memeriksa…" : "Masuk"}</button>

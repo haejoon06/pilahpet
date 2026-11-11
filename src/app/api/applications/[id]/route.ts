@@ -5,7 +5,7 @@ import { getLocation, getSql } from "@/lib/db";
 import { applicationReviewSchema } from "@/lib/validation";
 
 export async function PATCH(request: Request, context: RouteContext<"/api/applications/[id]">) {
-  const session = await requestSession(request, ["operator", "admin"]);
+  const session = await requestSession(request, ["admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const parsed = applicationReviewSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });

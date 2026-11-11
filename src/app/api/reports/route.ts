@@ -9,7 +9,7 @@ const csv = (rows: Record<string, unknown>[]) => {
 };
 
 export async function GET(request: Request) {
-  const session = await requestSession(request, ["treasurer", "supervisor", "admin"]);
+  const session = await requestSession(request, ["chairperson", "treasurer", "admin", "waste_manager"]);
   if (!session) return Response.json({ error: "Tidak berwenang" }, { status: 401 });
   const type = new URL(request.url).searchParams.get("type") ?? "deposits";
   const sql = getSql(); const location = await getLocation(); let rows: Record<string, unknown>[];

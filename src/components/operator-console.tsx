@@ -22,7 +22,7 @@ const categoryLabel = (value:string) => ({elementary:"SD",junior_high:"SMP",seni
 
 export default function OperatorConsole({role,members,deposits,applications,sales,prices,cashEntries,maintenance,audits}:{role:Role;members:Member[];deposits:Deposit[];applications:Application[];sales:Sale[];prices:Price[];cashEntries:CashEntry[];maintenance:Maintenance[];audits:Audit[]}) {
   const router = useRouter(); const [message,setMessage] = useState(""); const [error,setError] = useState(false); const [busy,setBusy] = useState(false);
-  const canOperate = role === "operator" || role === "admin"; const canFinance = role === "treasurer" || role === "admin"; const canReadAll = role === "supervisor" || role === "admin"; const canReadPopulation = canOperate || canReadAll;
+  const canOperate = role === "waste_manager" || role === "admin"; const canFinance = canOperate; const canReadAll = role === "chairperson" || role === "admin"; const canReadPopulation = role === "secretary" || canReadAll;
   const tabs = useMemo(() => [
     ...(canOperate ? [{id:"applications" as Tab,label:`Pendaftaran (${applications.filter((item)=>item.status==="pending").length})`},{id:"members" as Tab,label:"Anggota"},{id:"deposits" as Tab,label:"Setoran"},{id:"maintenance" as Tab,label:"Pemeliharaan"}] : []),
     ...(canReadPopulation ? [{id:"population" as Tab,label:"Data kependudukan"}] : []),

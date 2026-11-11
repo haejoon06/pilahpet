@@ -1,4 +1,4 @@
 import { requirePageSession } from "@/lib/auth";
 import BottleAdminPanel from "@/components/bottle-admin-panel";
 export const instant=false;
-export default async function BottlePage(){const session=await requirePageSession();return <div className="admin-page"><div className="admin-page-head"><div><p className="eyebrow green">ZERO WASTE RT</p><h1>Pilah Botol & Voucher</h1><p>Integrasi sensor, QR sekali pakai, akun warga, dan voucher digital.</p></div></div><BottleAdminPanel role={session.role}/></div>;}
+export default async function BottlePage(){const session=await requirePageSession();if(!["chairperson","admin","waste_manager"].includes(session.role))return <div className="admin-page"><div className="empty-state">Anda tidak memiliki akses ke pengelolaan sampah botol.</div></div>;return <div className="admin-page"><div className="admin-page-head"><div><p className="eyebrow green">ZERO WASTE RT</p><h1>Pilah Botol & Voucher</h1><p>Integrasi sensor, QR sekali pakai, akun warga, dan voucher digital.</p></div></div><BottleAdminPanel role={session.role}/></div>;}

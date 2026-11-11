@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const roleSchema = z.enum(["operator", "treasurer", "supervisor", "admin"]);
+export const roleSchema = z.enum(["chairperson", "secretary", "treasurer", "admin", "waste_manager"]);
 export const memberSchema = z.object({
   name: z.string().trim().min(2, "Nama lengkap minimal 2 karakter").max(120),
   groupName: z.string().trim().max(120).optional().or(z.literal("")),

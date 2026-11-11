@@ -4,7 +4,7 @@ import { getLocation,getSql } from "@/lib/db";
 import { letterReviewSchema } from "@/lib/validation";
 
 export async function PATCH(request:Request,context:RouteContext<"/api/letters/[id]">){
-  const session=await requestSession(request,["operator","admin"]);if(!session)return NextResponse.json({error:"Tidak berwenang"},{status:401});
+  const session=await requestSession(request,["chairperson","secretary","admin"]);if(!session)return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const parsed=letterReviewSchema.safeParse(await request.json().catch(()=>({})));if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message},{status:400});
   const {id}=await context.params;const location=await getLocation();if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const data=parsed.data;const status=data.action==="approve"?"approved":"rejected";const sql=getSql();

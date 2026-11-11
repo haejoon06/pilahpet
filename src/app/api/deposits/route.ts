@@ -4,7 +4,7 @@ import { getLocation, getSql } from "@/lib/db";
 import { depositSchema } from "@/lib/validation";
 
 export async function GET(request: Request) {
-  const session = await requestSession(request, ["operator", "treasurer", "supervisor", "admin"]);
+  const session = await requestSession(request, ["chairperson", "admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const sql = getSql(); const location = await getLocation();
   const rows = await sql`SELECT d.id, m.name AS member_name, d.net_weight_kg::float8, d.price_snapshot::float8, d.total_value::float8, d.confirmed_at FROM deposits d JOIN members m ON m.id = d.member_id WHERE d.location_id = ${location!.id} AND d.status = 'confirmed' ORDER BY d.confirmed_at DESC LIMIT 100`;
@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const session = await requestSession(request, ["operator", "admin"]);
+  const session = await requestSession(request, ["admin", "waste_manager"]);
   if (!session) return NextResponse.json({ error: "Tidak berwenang" }, { status: 401 });
   const parsed = depositSchema.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 400 });

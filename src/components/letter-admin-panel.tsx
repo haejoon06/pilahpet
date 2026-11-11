@@ -16,11 +16,11 @@ type ReviewState={item:Letter;action:"approve"|"reject"}|null;
 type CreatedLetter={id:string;letter_number:string}|null;
 
 const statusLabels:Record<LetterStatus,string>={pending:"Menunggu",approved:"Selesai",rejected:"Ditolak"};
-const roleLabels:Record<string,string>={admin:"Administrator RT",operator:"Petugas RT",supervisor:"Pengawas"};
+const roleLabels:Record<string,string>={admin:"Admin",chairperson:"Ketua RT",secretary:"Sekretaris"};
 const formatDate=(value:string)=>new Intl.DateTimeFormat("id-ID",{dateStyle:"long",timeStyle:"short",timeZone:"Asia/Jakarta"}).format(new Date(value));
 
 export default function LetterAdminPanel({role}:{role:Role}){
-  const canManage=role==="admin"||role==="operator";
+  const canManage=role==="admin"||role==="chairperson"||role==="secretary";
   const [items,setItems]=useState<Letter[]>([]);
   const [residents,setResidents]=useState<ResidentOption[]>([]);
   const [createType,setCreateType]=useState<LetterType>("introduction");

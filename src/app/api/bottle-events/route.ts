@@ -5,7 +5,7 @@ import { getLocation,getSql } from "@/lib/db";
 import { bottleEventSchema } from "@/lib/validation";
 
 export async function GET(request:Request){
-  const session=await requestSession(request,["operator","treasurer","supervisor","admin"]);
+  const session=await requestSession(request,["chairperson","admin","waste_manager"]);
   if(!session) return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const location=await getLocation(); if(!location) return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const sql=getSql();
@@ -18,7 +18,7 @@ export async function GET(request:Request){
 }
 
 export async function POST(request:Request){
-  const session=await requestSession(request,["operator","admin"]);
+  const session=await requestSession(request,["admin","waste_manager"]);
   if(!session) return NextResponse.json({error:"Tidak berwenang"},{status:401});
   const parsed=bottleEventSchema.safeParse(await request.json().catch(()=>({})));
   if(!parsed.success) return NextResponse.json({error:parsed.error.issues[0]?.message},{status:400});

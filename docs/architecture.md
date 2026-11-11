@@ -14,10 +14,11 @@ RT SMART adalah modular monolith berbasis Next.js. Portal publik, panel pengurus
 
 | Peran | Kewenangan utama |
 |---|---|
-| Petugas RT | Data warga, akun warga, surat, dan operasional pilah botol |
-| Bendahara Pilah Botol | Membaca operasional dan transaksi pilah botol |
-| Pengawas | Membaca data dan laporan tanpa melakukan perubahan |
-| Administrator RT | Seluruh modul, pengaturan RT, serta pengelolaan kas RT |
+| Ketua RT | Memantau seluruh layanan serta menangani administrasi surat |
+| Sekretaris | Mengelola data warga, akun warga, dan surat-menyurat |
+| Bendahara | Mengelola pemasukan dan pengeluaran kas RT |
+| Admin | Seluruh modul, akun, konfigurasi, dan pengaturan RT |
+| Pengelola Sampah Botol | Mengelola sensor, QR, setoran botol, dan voucher |
 | Warga | Profil, riwayat surat yang dibuat RT, klaim QR, riwayat botol, dan voucher miliknya |
 
 Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi PostgreSQL agar QR hanya dapat dipakai sekali dan pencatatan voucher berlangsung atomik.
@@ -27,7 +28,7 @@ Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi Po
 - Akun warga hanya dibuat pengurus dari data penduduk; pendaftaran publik dinonaktifkan.
 - PIN warga disimpan sebagai HMAC dan hanya ditampilkan saat akun diterbitkan.
 - Nomor KK dan NIK disimpan dengan AES-256-GCM, memiliki blind index untuk deteksi duplikasi, dan ditampilkan tersamarkan.
-- Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Administrator RT.
+- Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Bendahara atau Admin.
 - Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
 - Surat dicatat langsung oleh pengurus dengan memilih penduduk; jenis surat memiliki isian khusus dan panduan dokumen, Word mengambil data kependudukan secara otomatis, dan nomor dibuat berurutan per lokasi dan tahun melalui fungsi PostgreSQL dengan penguncian transaksi.
 - Dasar pemilihan jenis dan redaksi surat dicatat pada `docs/letter-references.md`; seluruh template diposisikan sebagai pengantar atau keterangan lingkungan, bukan pengganti dokumen instansi berwenang.

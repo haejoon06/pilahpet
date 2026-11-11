@@ -14,6 +14,7 @@ type Household = {
   postal_code?:string|null; village:string; subdistrict:string; regency:string; province:string;
   created_at:string; residents:Resident[];
 };
+type RegionIdentity={rt_number:string|null;rw_number:string|null;village:string|null;subdistrict:string|null;regency:string|null;province:string|null;postal_code:string|null};
 
 const displayDate = (value?:string|null) => {
   if(!value) return "—";
@@ -45,13 +46,11 @@ export default function PopulationPanel({ role }:{ role:Role }) {
   const [busy,setBusy] = useState(false);
   const [message,setMessage] = useState("");
   const [error,setError] = useState(false);
-  const [searchRt,setSearchRt] = useState("");
-  const [searchRw,setSearchRw] = useState("");
+  const [region,setRegion] = useState<RegionIdentity|null>(null);
 
-  const load = useCallback(async (rt="",rw="") => {
+  const load = useCallback(async () => {
     setLoading(true); setError(false);
-    const params = new URLSearchParams(); if(rt) params.set("rt",rt); if(rw) params.set("rw",rw);
-    const response = await fetch(`/api/population/households?${params}`);
+    const response = await fetch("/api/population/households");
     const body = await response.json().catch(() => []); setLoading(false);
     if(!response.ok) { setError(true); setMessage(body.error ?? "Data kependudukan belum dapat dimuat."); return; }
     setHouseholds(body);
@@ -59,11 +58,14 @@ export default function PopulationPanel({ role }:{ role:Role }) {
 
   useEffect(() => {
     let active=true;
-    fetch("/api/population/households").then(async(response)=>({response,body:await response.json().catch(()=>[])})).then(({response,body})=>{
+    Promise.all([fetch("/api/population/households"),fetch("/api/settings/location")]).then(async([response,locationResponse])=>({
+      response,body:await response.json().catch(()=>[]),locationResponse,locationBody:await locationResponse.json().catch(()=>null),
+    })).then(({response,body,locationResponse,locationBody})=>{
       if(!active) return;
       setLoading(false);
       if(!response.ok) { setError(true); setMessage(body.error??"Data kependudukan belum dapat dimuat."); return; }
       setHouseholds(body);
+      if(locationResponse.ok)setRegion(locationBody);
     });
     return()=>{active=false;};
   },[]);
@@ -71,6 +73,13 @@ export default function PopulationPanel({ role }:{ role:Role }) {
   async function submit(event:FormEvent<HTMLFormElement>,url:string,success:string) {
     event.preventDefault(); setBusy(true); setError(false); setMessage("Menyimpan data terenkripsi…");
     const form=event.currentTarget; const data=Object.fromEntries(new FormData(form));
+    if(url.endsWith("/households")){
+      if(!region?.rt_number||!region.rw_number||!region.village||!region.subdistrict||!region.regency||!region.province||!region.postal_code){
+        setBusy(false);setError(true);setMessage("Identitas wilayah belum tersinkron. Minta Ketua RT atau Admin membuka Pengaturan RT.");return;
+      }
+      data.rt=region.rt_number;data.rw=region.rw_number;data.village=region.village;data.subdistrict=region.subdistrict;
+      data.regency=region.regency;data.province=region.province;data.postalCode=region.postal_code;
+    }
     if(url.endsWith("/residents")) {
       const year=String(data.birthYear); const month=String(data.birthMonth).padStart(2,"0"); const day=String(data.birthDay).padStart(2,"0");
       const birthDate=`${year}-${month}-${day}`; const parsedDate=new Date(`${birthDate}T00:00:00Z`);
@@ -81,30 +90,28 @@ export default function PopulationPanel({ role }:{ role:Role }) {
     const response=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(data)});
     const body=await response.json().catch(()=>({})); setBusy(false);
     if(!response.ok) { setError(true); setMessage(body.error??"Data belum dapat disimpan."); return; }
-    setMessage(success); form.reset(); await load(searchRt,searchRw);
+    setMessage(success); form.reset(); await load();
   }
-
-  async function search(event:FormEvent<HTMLFormElement>) { event.preventDefault(); setMessage(""); await load(searchRt,searchRw); }
-  async function clearSearch() { setSearchRt(""); setSearchRw(""); setMessage(""); await load(); }
   async function createResidentAccount(resident:Resident){
     if(!window.confirm(`Buat akun warga untuk ${resident.full_name}?`))return;
     setBusy(true);setError(false);setMessage("Membuat akun warga…");
     const response=await fetch(`/api/population/residents/${resident.id}/account`,{method:"POST"});const body=await response.json();setBusy(false);
     if(!response.ok){setError(true);setMessage(body.error??"Akun belum dapat dibuat.");return;}
-    setMessage(`Akun berhasil dibuat. Kode: ${body.member_code}. PIN awal: ${body.accessPin}. Catat dan berikan langsung kepada warga.`);await load(searchRt,searchRw);
+    setMessage(`Akun berhasil dibuat. Kode: ${body.member_code}. PIN awal: ${body.accessPin}. Catat dan berikan langsung kepada warga.`);await load();
   }
+
+  const identityReady=Boolean(region?.rt_number&&region.rw_number&&region.village&&region.subdistrict&&region.regency&&region.province&&region.postal_code);
 
   return <div className="population-stack">
     <section className="privacy-banner"><div><strong>Data pribadi dilindungi</strong><p>Nomor KK dan NIK dienkripsi sebelum disimpan serta hanya ditampilkan dalam bentuk tersamarkan. Jangan mengunggah foto KK ke halaman publik.</p></div><span>AKSES TERBATAS</span></section>
     {message&&<p className={`message ${error?"error":"success"}`} role="status">{message}</p>}
 
-    {canManage&&<div className="console-grid">
-      <section className="panel"><h2>Tambah Data Kartu Keluarga (KK)</h2><p className="subtle">Masukkan identitas KK dan wilayah tempat tinggal. Tanggal penginputan dicatat otomatis oleh sistem.</p><form className="form" onSubmit={(event)=>submit(event,"/api/population/households","Data Kartu Keluarga berhasil disimpan.")}>
+    {canManage&&!identityReady&&<div className="empty-state">Identitas wilayah sistem belum tersedia. Minta Ketua RT atau Admin menyinkronkan wilayah pada menu Pengaturan RT sebelum menambah keluarga.</div>}
+    {canManage&&identityReady&&<div className="console-grid">
+      <section className="panel"><h2>Tambah Data Kartu Keluarga (KK)</h2><p className="subtle">RT/RW dan wilayah diisi otomatis dari identitas sistem. Sekretaris hanya memasukkan nomor KK, kepala keluarga, dan alamat rumah.</p><form className="form" onSubmit={(event)=>submit(event,"/api/population/households","Data Kartu Keluarga berhasil disimpan.")}>
         <div className="inline"><div className="field"><label htmlFor="kk-number">Nomor KK</label><input id="kk-number" name="familyCardNumber" inputMode="numeric" pattern="[0-9]{16}" maxLength={16} autoComplete="off" required/><small className="field-hint">16 digit, akan disimpan terenkripsi.</small></div><div className="field"><label htmlFor="head-name">Nama kepala keluarga</label><input id="head-name" name="headName" required/></div></div>
         <div className="field"><label htmlFor="family-address">Alamat</label><textarea id="family-address" name="address" rows={2} required/></div>
-        <div className="address-grid"><div className="field"><label htmlFor="family-rt">RT</label><input id="family-rt" name="rt" inputMode="numeric" pattern="[0-9]{1,3}" required/></div><div className="field"><label htmlFor="family-rw">RW</label><input id="family-rw" name="rw" inputMode="numeric" pattern="[0-9]{1,3}" required/></div><div className="field"><label htmlFor="family-village">Nama Desa/Kelurahan</label><input id="family-village" name="village" required/></div></div>
-        <div className="inline"><div className="field"><label htmlFor="subdistrict">Nama Kecamatan</label><input id="subdistrict" name="subdistrict" required/></div><div className="field"><label htmlFor="regency">Nama Kabupaten/Kota</label><input id="regency" name="regency" required/></div></div>
-        <div className="inline"><div className="field"><label htmlFor="province">Nama Provinsi</label><input id="province" name="province" required/></div><div className="field"><label htmlFor="postal-code">Kode Pos</label><input id="postal-code" name="postalCode" inputMode="numeric" pattern="[0-9]{5}" maxLength={5} required/><small className="field-hint">Masukkan 5 digit kode pos.</small></div></div>
+        <div className="letter-requirements"><strong>Wilayah otomatis</strong><div><span>RT {region?.rt_number}/RW {region?.rw_number}</span><span>{region?.village}</span><span>{region?.subdistrict}</span><span>{region?.regency}</span><span>{region?.province} {region?.postal_code}</span></div><small>Data ini dikunci untuk seluruh keluarga pada RT yang sama.</small></div>
         <div className="field"><label htmlFor="input-date">Tanggal Penginputan</label><input id="input-date" value={new Intl.DateTimeFormat("id-ID",{dateStyle:"long",timeZone:"Asia/Jakarta"}).format(new Date())} readOnly aria-readonly="true"/><small className="field-hint">Tanggal tersimpan otomatis saat data KK disimpan.</small></div>
         <button className="button dark" disabled={busy}>Simpan Data Kartu Keluarga</button>
       </form></section>
@@ -123,9 +130,8 @@ export default function PopulationPanel({ role }:{ role:Role }) {
       </form>:<div className="empty-state">Simpan data keluarga terlebih dahulu.</div>}</section>
     </div>}
 
-    <section className="panel"><div className="panel-head population-head"><div><h2>Pencarian data RT/RW</h2><p className="subtle">Isi salah satu atau keduanya untuk menyaring keluarga secara tepat.</p></div><span className="result-count">{households.length} keluarga</span></div>
-      <form className="population-search" onSubmit={search}><div className="field"><label htmlFor="search-rt">Cari RT</label><input id="search-rt" inputMode="numeric" pattern="[0-9]{1,3}" value={searchRt} onChange={(event)=>setSearchRt(event.target.value)} placeholder="Contoh: 002"/></div><div className="field"><label htmlFor="search-rw">Cari RW</label><input id="search-rw" inputMode="numeric" pattern="[0-9]{1,3}" value={searchRw} onChange={(event)=>setSearchRw(event.target.value)} placeholder="Contoh: 008"/></div><button className="button dark" disabled={loading}>Cari data</button><button className="button secondary" type="button" onClick={clearSearch} disabled={loading}>Tampilkan semua</button></form>
-      {loading?<div className="empty-state">Memuat data kependudukan…</div>:households.length?<div className="household-list">{households.map((household)=><article className="household-card" key={household.id}><header><div><span className="location-chip">RT {household.rt} / RW {household.rw}</span><h3>{household.head_name}</h3><p>KK {household.family_card_number_masked}</p></div><strong>{household.residents.length} anggota</strong></header><div className="household-address"><p>{household.address}</p><p>{household.village}, {household.subdistrict}, {household.regency}, {household.province} {household.postal_code??""}</p><small>Diinput: {displayDateTime(household.created_at)}</small></div>{household.residents.length?<div className="table-wrap"><table className="data-table resident-table"><thead><tr><th>Nama/NIK</th><th>L/P</th><th>Lahir</th><th>Hubungan</th><th>Pendidikan</th><th>Pekerjaan</th><th>Status</th><th>Akun warga</th></tr></thead><tbody>{household.residents.map((resident)=><tr key={resident.id}><td><strong>{resident.full_name}</strong><br/><span className="masked-id">{resident.nik_masked}</span></td><td>{resident.gender==="male"?"L":"P"}</td><td>{resident.birth_place}<br/>{displayDate(resident.birth_date)}</td><td>{resident.family_relationship}</td><td>{resident.education}</td><td>{resident.occupation}</td><td>{resident.marital_status}</td><td>{resident.member_code?<span className="status-pill approved">{resident.member_code}</span>:canManage?<button className="text-button" disabled={busy} onClick={()=>createResidentAccount(resident)}>Buat akun</button>:"Belum ada"}</td></tr>)}</tbody></table></div>:<div className="empty-inline">Belum ada anggota keluarga.</div>}</article>)}</div>:<div className="empty-state">Tidak ada keluarga yang cocok dengan RT/RW tersebut.</div>}
+    <section className="panel"><div className="panel-head population-head"><div><h2>Daftar keluarga</h2><p className="subtle">Seluruh keluarga berada pada {region?.rt_number&&region?.rw_number?`RT ${region.rt_number}/RW ${region.rw_number}`:"wilayah RT yang sama"}.</p></div><span className="result-count">{households.length} keluarga</span></div>
+      {loading?<div className="empty-state">Memuat data kependudukan…</div>:households.length?<div className="household-list">{households.map((household)=><article className="household-card" key={household.id}><header><div><span className="location-chip">RT {household.rt} / RW {household.rw}</span><h3>{household.head_name}</h3><p>KK {household.family_card_number_masked}</p></div><strong>{household.residents.length} anggota</strong></header><div className="household-address"><p>{household.address}</p><p>{household.village}, {household.subdistrict}, {household.regency}, {household.province} {household.postal_code??""}</p><small>Diinput: {displayDateTime(household.created_at)}</small></div>{household.residents.length?<div className="table-wrap"><table className="data-table resident-table"><thead><tr><th>Nama/NIK</th><th>L/P</th><th>Lahir</th><th>Hubungan</th><th>Pendidikan</th><th>Pekerjaan</th><th>Status</th><th>Akun warga</th></tr></thead><tbody>{household.residents.map((resident)=><tr key={resident.id}><td><strong>{resident.full_name}</strong><br/><span className="masked-id">{resident.nik_masked}</span></td><td>{resident.gender==="male"?"L":"P"}</td><td>{resident.birth_place}<br/>{displayDate(resident.birth_date)}</td><td>{resident.family_relationship}</td><td>{resident.education}</td><td>{resident.occupation}</td><td>{resident.marital_status}</td><td>{resident.member_code?<span className="status-pill approved">{resident.member_code}</span>:canManage?<button className="text-button" disabled={busy} onClick={()=>createResidentAccount(resident)}>Buat akun</button>:"Belum ada"}</td></tr>)}</tbody></table></div>:<div className="empty-inline">Belum ada anggota keluarga.</div>}</article>)}</div>:<div className="empty-state">Belum ada data keluarga.</div>}
     </section>
   </div>;
 }

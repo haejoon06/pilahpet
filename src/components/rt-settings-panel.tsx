@@ -4,7 +4,7 @@ import { FormEvent,useCallback,useEffect,useState } from "react";
 
 type Settings={
   name:string;address?:string|null;rt_number?:string|null;rw_number?:string|null;village?:string|null;
-  subdistrict?:string|null;regency?:string|null;postal_code?:string|null;chairperson_name?:string|null;
+  subdistrict?:string|null;regency?:string|null;province?:string|null;postal_code?:string|null;chairperson_name?:string|null;
 };
 type Position="chairperson"|"secretary"|"treasurer"|"admin"|"waste_manager";
 type Official={id:string;position:Position;full_name:string;start_date:string;end_date?:string|null;phone?:string|null;notes?:string|null;current:boolean};
@@ -68,7 +68,7 @@ export default function RtSettingsPanel(){
   }
 
   if(!data)return <div className="empty-state">Memuat pengaturan RT…</div>;
-  const identityReady=Boolean(data.rt_number&&data.rw_number&&data.village&&data.subdistrict&&data.regency);
+  const identityReady=Boolean(data.rt_number&&data.rw_number&&data.village&&data.subdistrict&&data.regency&&data.province);
   return <div className="module-stack">
     {message&&<p className={`message ${error?"error":"success"}`} role="status">{message}</p>}
     <section className="panel settings-panel">
@@ -78,6 +78,7 @@ export default function RtSettingsPanel(){
         <div><span>Desa/Kelurahan</span><strong>{data.village||"—"}</strong></div>
         <div><span>Kecamatan</span><strong>{data.subdistrict||"—"}</strong></div>
         <div><span>Kabupaten/Kota</span><strong>{data.regency||"—"}</strong></div>
+        <div><span>Provinsi</span><strong>{data.province||"—"}</strong></div>
         <div><span>Kode pos</span><strong>{data.postal_code||"—"}</strong></div>
         <div><span>Ketua RT aktif</span><strong>{data.chairperson_name||"Belum ditetapkan"}</strong></div>
         <div className="wide"><span>Alamat pada kop surat</span><strong>{data.address||"—"}</strong></div>

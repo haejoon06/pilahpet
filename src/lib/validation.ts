@@ -146,12 +146,14 @@ export const letterReviewSchema = z.object({
   notes: z.string().trim().max(300).optional().or(z.literal("")),
 });
 
-export const rtSettingsSchema=z.object({
-  name:z.string().trim().min(2).max(120),
-  rtNumber:regionNumber,
-  rwNumber:regionNumber,
-  village:z.string().trim().min(2).max(120),
-  address:z.string().trim().min(3).max(300),
-  chairpersonName:z.string().trim().min(2).max(120),
+export const rtOfficialSchema=z.object({
+  position:z.enum(["chairperson","secretary","treasurer","admin","waste_manager"]),
+  fullName:z.string().trim().min(2,"Nama pengurus minimal 2 karakter").max(120),
+  startDate:z.string().date(),
+  endDate:z.string().date().optional().or(z.literal("")),
+  phone:z.string().trim().max(30).optional().or(z.literal("")),
+  notes:z.string().trim().max(300).optional().or(z.literal("")),
+}).refine((data)=>!data.endDate||data.endDate>=data.startDate,{
+  path:["endDate"],message:"Tanggal selesai tidak boleh lebih awal dari tanggal mulai",
 });
 

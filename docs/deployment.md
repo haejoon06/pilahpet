@@ -22,9 +22,9 @@ Jangan menyimpan nilai variabel tersebut di Git. Vercel mengelolanya per lingkun
 1. Hubungkan repo GitHub ke proyek Vercel.
 2. Tambahkan integrasi Neon dan pastikan `DATABASE_URL` tersedia.
 3. Tarik variabel lingkungan secara lokal atau gunakan `vercel env run`.
-4. Jalankan `node --env-file=.env.local scripts/migrate.mjs` sekali untuk setiap database baru.
+4. Jalankan `node --env-file=.env.local scripts/migrate.mjs` untuk menerapkan migrasi baru, termasuk tabel periode kepengurusan RT.
 5. Jalankan `pnpm build`, lalu deploy ke produksi.
-6. Uji `/api/health`, semua peran, pencarian RT/RW, pembuatan akun warga, kas RT, perangkat sensor, QR, klaim voucher, pengajuan surat, persetujuan, unduhan Word, dan penyamaran nomor KK/NIK.
+6. Uji `/api/health`, semua peran, sinkronisasi identitas wilayah, periode pengurus, pencarian RT/RW, pembuatan akun warga, kas RT, perangkat sensor, QR, klaim voucher, pembuatan surat, kop dan penandatangan Word, serta penyamaran nomor KK/NIK.
 
 ## Pemulihan
 

@@ -30,6 +30,8 @@ Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi Po
 - Nomor KK dan NIK disimpan dengan AES-256-GCM, memiliki blind index untuk deteksi duplikasi, dan ditampilkan tersamarkan.
 - Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Bendahara atau Admin.
 - Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
-- Surat dicatat langsung oleh pengurus dengan memilih penduduk; jenis surat memiliki isian khusus dan panduan dokumen, Word mengambil data kependudukan secara otomatis, dan nomor dibuat berurutan per lokasi dan tahun melalui fungsi PostgreSQL dengan penguncian transaksi.
+- Identitas RT/RW dan wilayah disinkronkan dari Data Kependudukan sehingga tidak diketik ulang ketika membuat surat.
+- Ketua RT dan pengurus disimpan pada tabel periode kepengurusan; penandatangan Word dipilih otomatis berdasarkan tanggal surat.
+- Surat dicatat langsung oleh Sekretaris atau pengurus dengan memilih penduduk; jenis surat memiliki isian khusus dan panduan dokumen, Word mengambil data kependudukan secara otomatis, dan nomor dibuat berurutan per lokasi dan tahun melalui fungsi PostgreSQL dengan penguncian transaksi.
 - Dasar pemilihan jenis dan redaksi surat dicatat pada `docs/letter-references.md`; seluruh template diposisikan sebagai pengantar atau keterangan lingkungan, bukan pengganti dokumen instansi berwenang.
-- Identitas kop dan Ketua RT dikelola oleh Ketua RT atau Admin melalui halaman Pengaturan RT.
+- Kop Word mengikuti hierarki pemerintah kabupaten, kecamatan, desa/kelurahan, RT/RW, dan alamat sekretariat yang tersimpan pada identitas wilayah sistem.

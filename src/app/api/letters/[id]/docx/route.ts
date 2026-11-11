@@ -38,6 +38,13 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
     if(row.member_id!==member.memberId&&(!owner?.resident_id||row.resident_id!==owner.resident_id))return new Response("Tidak berwenang",{status:403});
   }
 
+  const signingMoment=row.reviewed_at||row.created_at||new Date();
+  const [periodChairperson]=await sql`SELECT full_name FROM rt_officials
+    WHERE location_id=${location.id} AND position='chairperson' AND start_date<=${signingMoment}::date
+      AND (end_date IS NULL OR end_date>=${signingMoment}::date)
+    ORDER BY start_date DESC LIMIT 1`;
+  const chairpersonName=String(periodChairperson?.full_name||location.chairperson_name||"________________________");
+
   const nik=row.nik_encrypted?decryptIdentityNumber(String(row.nik_encrypted)):"-";
   const address=row.address?`${row.address}, RT ${row.rt}/RW ${row.rw}, ${row.village}, ${row.subdistrict}, ${row.regency}${row.postal_code?` ${row.postal_code}`:""}`:row.area||"-";
   const letterType=isLetterType(String(row.letter_type))?String(row.letter_type) as keyof typeof letterDocumentTitles:"introduction";
@@ -85,7 +92,10 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
     ...detailRows,
   ];
   const signaturePlace=cleanPlace(String(row.regency||location.village||location.name));
-  const signatureDate=formatDate(row.reviewed_at||new Date());
+  const signatureDate=formatDate(signingMoment);
+  const regencyName=String(location.regency||row.regency||"Kabupaten/Kota").replace(/^(kabupaten|kota)\s+/i,"").toUpperCase();
+  const subdistrictName=String(location.subdistrict||row.subdistrict||"Kecamatan").replace(/^kecamatan\s+/i,"").toUpperCase();
+  const villageName=String(location.village||row.village||location.name).replace(/^(desa|kelurahan)\s+/i,"").toUpperCase();
   const bodyChildren:Paragraph[]=[
     new Paragraph({spacing:{before:180,after:160},children:[new TextRun({text:"Yang bertanda tangan di bawah ini, Ketua RT, menerangkan bahwa:"})]}),
   ];
@@ -98,9 +108,11 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
   const doc=new Document({
     styles:{default:{document:{run:{font:"Arial",size:22,color:"000000"},paragraph:{spacing:{line:276}}}}},
     sections:[{properties:{page:{margin:{top:850,right:850,bottom:850,left:850}}},children:[
-      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:"PENGURUS RUKUN TETANGGA",bold:true,size:30,color:"000000"})]}),
-      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:30},children:[new TextRun({text:`RT ${location.rt_number||"-"} / RW ${location.rw_number||"-"} - ${(location.village||location.name).toUpperCase()}`,bold:true,size:26,color:"000000"})]}),
-      new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.DOUBLE,size:6,color:"000000"}},spacing:{after:220},children:[new TextRun({text:location.address||"Sekretariat RT",size:20,color:"000000"})]}),
+      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:20},children:[new TextRun({text:`PEMERINTAH KABUPATEN ${regencyName}`,bold:true,size:24,color:"000000"})]}),
+      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:20},children:[new TextRun({text:`KECAMATAN ${subdistrictName}`,bold:true,size:24,color:"000000"})]}),
+      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:20},children:[new TextRun({text:`DESA/KELURAHAN ${villageName}`,bold:true,size:30,color:"000000"})]}),
+      new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:20},children:[new TextRun({text:`RUKUN TETANGGA ${location.rt_number||"-"} / RUKUN WARGA ${location.rw_number||"-"}`,bold:true,size:22,color:"000000"})]}),
+      new Paragraph({alignment:AlignmentType.CENTER,border:{bottom:{style:BorderStyle.DOUBLE,size:8,color:"000000"}},spacing:{after:220},children:[new TextRun({text:location.address||"Sekretariat RT",size:18,color:"000000"})]}),
       new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:40},children:[new TextRun({text:letterDocumentTitles[letterType],bold:true,size:28,color:"000000",underline:{}})]}),
       new Paragraph({alignment:AlignmentType.CENTER,spacing:{after:160},children:[new TextRun({text:`Nomor: ${row.letter_number||"-"}`,color:"000000"})]}),
       ...bodyChildren,
@@ -108,9 +120,9 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
       ...closingChildren,
       new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[new TableRow({children:[cell("",false,54),new TableCell({width:{size:46,type:WidthType.PERCENTAGE},margins:{top:80,bottom:60,left:80,right:80},borders:noBorders,children:[
         new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:`${signaturePlace}, ${signatureDate}`})]}),
-        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:`Ketua RT ${location.rt_number||""}`.trim()})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:`Ketua RT ${location.rt_number||""}/RW ${location.rw_number||""}`.trim()})]}),
         new Paragraph({text:"\n\n",alignment:AlignmentType.CENTER}),
-        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:`(${location.chairperson_name||"________________________"})`,bold:true})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,children:[new TextRun({text:`(${chairpersonName})`,bold:true})]}),
       ]})]})]}),
     ]}],
   });

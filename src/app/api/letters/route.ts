@@ -36,9 +36,10 @@ export async function POST(request:Request){
   if(!parsed.success)return NextResponse.json({error:parsed.error.issues[0]?.message},{status:400});
   const location=await getLocation();
   if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
-  if(!location.rt_number||!location.rw_number||!location.village||!location.address||!location.chairperson_name){
-    return NextResponse.json({error:"Identitas RT belum tersimpan. Minta Ketua RT atau Admin melengkapi RT, RW, desa, alamat sekretariat, dan nama Ketua RT pada menu Pengaturan RT."},{status:400});
+  if(!location.rt_number||!location.rw_number||!location.village||!location.subdistrict||!location.regency||!location.address){
+    return NextResponse.json({error:"Identitas wilayah belum tersinkron. Minta Ketua RT atau Admin menekan Sinkronkan dari Data Kependudukan pada menu Pengaturan RT."},{status:400});
   }
+  if(!location.chairperson_name)return NextResponse.json({error:"Belum ada Ketua RT yang aktif pada periode sekarang. Tambahkan periode Ketua RT pada menu Pengaturan RT."},{status:400});
   const data=parsed.data;
   const sql=getSql();
   const extra={

@@ -8,8 +8,23 @@ export function getSql() {
 
 export async function getLocation() {
   const sql = getSql();
-  const rows = await sql`SELECT id, name, address,rt_number,rw_number,village,chairperson_name FROM locations WHERE active = true ORDER BY created_at LIMIT 1`;
-  return rows[0] as { id: string; name: string; address: string | null;rt_number:string|null;rw_number:string|null;village:string|null;chairperson_name:string|null } | undefined;
+  const rows = await sql`SELECT location.id,location.name,location.address,location.rt_number,location.rw_number,
+    location.village,location.subdistrict,location.regency,location.postal_code,
+    official.full_name AS chairperson_name,
+    official.start_date AS chairperson_start_date,official.end_date AS chairperson_end_date
+    FROM locations location
+    LEFT JOIN LATERAL (
+      SELECT full_name,start_date,end_date FROM rt_officials
+      WHERE location_id=location.id AND position='chairperson' AND start_date<=current_date
+        AND (end_date IS NULL OR end_date>=current_date)
+      ORDER BY start_date DESC LIMIT 1
+    ) official ON true
+    WHERE location.active=true ORDER BY location.created_at LIMIT 1`;
+  return rows[0] as {
+    id:string;name:string;address:string|null;rt_number:string|null;rw_number:string|null;village:string|null;
+    subdistrict:string|null;regency:string|null;postal_code:string|null;chairperson_name:string|null;
+    chairperson_start_date:string|null;chairperson_end_date:string|null;
+  }|undefined;
 }
 
 export async function getDashboardData() {

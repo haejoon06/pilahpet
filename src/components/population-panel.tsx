@@ -75,7 +75,7 @@ export default function PopulationPanel({ role }:{ role:Role }) {
     const form=event.currentTarget; const data=Object.fromEntries(new FormData(form));
     if(url.endsWith("/households")){
       if(!region?.rt_number||!region.rw_number||!region.village||!region.subdistrict||!region.regency||!region.province||!region.postal_code){
-        setBusy(false);setError(true);setMessage("Identitas wilayah belum tersinkron. Minta Ketua RT atau Admin membuka Pengaturan RT.");return;
+        setBusy(false);setError(true);setMessage("Identitas resmi RT belum tersedia. Hubungi administrator sistem.");return;
       }
       data.rt=region.rt_number;data.rw=region.rw_number;data.village=region.village;data.subdistrict=region.subdistrict;
       data.regency=region.regency;data.province=region.province;data.postalCode=region.postal_code;

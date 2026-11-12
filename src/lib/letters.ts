@@ -1,5 +1,5 @@
 export const letterLabels={
-  introduction:"Surat Pengantar Umum",
+  introduction:"Surat Pengantar RT",
   domicile:"Keterangan Domisili",
   business:"Keterangan Usaha",
   indigent:"Keterangan Tidak Mampu",
@@ -15,7 +15,7 @@ export const letterLabels={
 export type LetterType=keyof typeof letterLabels;
 
 export const letterDescriptions:Record<LetterType,string>={
-  introduction:"Pengantar untuk keperluan administrasi umum di luar kategori khusus.",
+  introduction:"Surat pengantar RT untuk melanjutkan keperluan administrasi di desa.",
   domicile:"Menerangkan tempat tinggal warga di wilayah RT.",
   business:"Pengantar yang menerangkan nama dan lokasi usaha warga.",
   indigent:"Pengantar untuk mengurus bantuan atau layanan sosial di instansi terkait.",
@@ -29,7 +29,7 @@ export const letterDescriptions:Record<LetterType,string>={
 };
 
 export const letterRequirements:Record<LetterType,string[]>={
-  introduction:["KTP","KK","Dokumen sesuai keperluan"],
+  introduction:["KTP","KK","Dokumen pendukung sesuai keperluan desa"],
   domicile:["KTP","KK","Bukti domisili bila diperlukan"],
   business:["KTP","KK","Bukti atau foto usaha","Pernyataan usaha"],
   indigent:["KTP","KK","Pernyataan tidak mampu","Dokumen pendukung"],

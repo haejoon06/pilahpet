@@ -50,7 +50,7 @@ export async function GET(request:Request,context:RouteContext<"/api/letters/[id
   const letterType=isLetterType(String(row.letter_type))?String(row.letter_type) as keyof typeof letterDocumentTitles:"introduction";
   const extra=(row.extra_data??{}) as Record<string,string|null|undefined>;
   const detailRows:Array<[string,string]>=[];
-  let statement=`Dengan ini memberikan pengantar kepada nama tersebut untuk keperluan ${row.purpose}.`;
+  let statement=`Dengan ini memberikan pengantar kepada nama tersebut untuk melanjutkan keperluan administrasi di Desa/Kelurahan ${String(location.village||row.village||"")}, yaitu ${row.purpose}.`;
   let serviceNote="";
   if(letterType==="domicile")statement="Dengan ini menerangkan bahwa nama tersebut benar merupakan warga dan berdomisili di wilayah kami.";
   if(letterType==="business"){

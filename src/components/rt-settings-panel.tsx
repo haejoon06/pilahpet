@@ -40,14 +40,6 @@ export default function RtSettingsPanel(){
     return()=>{active=false;};
   },[]);
 
-  async function syncLocation(){
-    setBusy(true);setMessage("");setError(false);
-    const response=await fetch("/api/settings/location/sync",{method:"POST"});
-    const body=await response.json().catch(()=>({}));setBusy(false);
-    if(!response.ok){setError(true);setMessage(body.error??"Identitas wilayah belum dapat disinkronkan.");return;}
-    setData(body);setMessage("Identitas wilayah berhasil disinkronkan dari Data Kependudukan.");
-  }
-
   async function saveOfficial(event:FormEvent<HTMLFormElement>){
     event.preventDefault();const form=event.currentTarget;setBusy(true);setMessage("");setError(false);
     const response=await fetch(editing?`/api/settings/officials/${editing.id}`:"/api/settings/officials",{
@@ -72,7 +64,7 @@ export default function RtSettingsPanel(){
   return <div className="module-stack">
     {message&&<p className={`message ${error?"error":"success"}`} role="status">{message}</p>}
     <section className="panel settings-panel">
-      <div className="panel-head"><div><h2>Identitas wilayah sistem</h2><p className="subtle">RT/RW tidak diketik saat membuat surat. Sistem mengambilnya dari Data Kependudukan agar konsisten.</p></div><span className={`status-pill ${identityReady?"approved":"pending"}`}>{identityReady?"Tersinkron":"Belum lengkap"}</span></div>
+      <div className="panel-head"><div><h2>Identitas resmi RT</h2><p className="subtle">Identitas ini dikunci untuk seluruh data warga dan kop surat sehingga tidak perlu diketik berulang kali.</p></div><span className={`status-pill ${identityReady?"approved":"pending"}`}>{identityReady?"Terverifikasi":"Belum lengkap"}</span></div>
       <div className="profile-card">
         <div><span>RT/RW</span><strong>{data.rt_number&&data.rw_number?`RT ${data.rt_number}/RW ${data.rw_number}`:"—"}</strong></div>
         <div><span>Desa/Kelurahan</span><strong>{data.village||"—"}</strong></div>
@@ -83,7 +75,6 @@ export default function RtSettingsPanel(){
         <div><span>Ketua RT aktif</span><strong>{data.chairperson_name||"Belum ditetapkan"}</strong></div>
         <div className="wide"><span>Alamat pada kop surat</span><strong>{data.address||"—"}</strong></div>
       </div>
-      <div className="row-actions"><button className="button secondary" type="button" onClick={syncLocation} disabled={busy}>{busy?"Menyinkronkan…":"Sinkronkan dari Data Kependudukan"}</button></div>
     </section>
 
     <section className="panel settings-panel">

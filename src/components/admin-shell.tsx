@@ -8,9 +8,9 @@ import NavIcon,{type NavIconName} from "@/components/nav-icon";
 const items:Array<{href:string;label:string;shortLabel:string;icon:NavIconName;roles:Role[]}>= [
   {href:"/dashboard",label:"Ringkasan",shortLabel:"Beranda",icon:"home",roles:["chairperson","secretary","treasurer","admin","waste_manager"]},
   {href:"/dashboard/kependudukan",label:"Data Kependudukan",shortLabel:"Warga",icon:"people",roles:["chairperson","secretary","admin"]},
-  {href:"/dashboard/kas",label:"Keuangan Kas RT",shortLabel:"Kas RT",icon:"wallet",roles:["chairperson","treasurer","admin"]},
+  {href:"/dashboard/kas",label:"Dana Kematian",shortLabel:"Dana",icon:"wallet",roles:["chairperson","treasurer","admin"]},
   {href:"/dashboard/pilah-botol",label:"Pilah Botol & QR",shortLabel:"Botol",icon:"recycle",roles:["chairperson","admin","waste_manager"]},
-  {href:"/dashboard/surat",label:"Surat Menyurat",shortLabel:"Surat",icon:"mail",roles:["chairperson","secretary","admin"]},
+  {href:"/dashboard/surat",label:"Surat Pengantar",shortLabel:"Surat",icon:"mail",roles:["chairperson","secretary","admin"]},
   {href:"/dashboard/pengaturan",label:"Pengaturan RT",shortLabel:"Atur",icon:"settings",roles:["chairperson","admin"]},
 ];
 

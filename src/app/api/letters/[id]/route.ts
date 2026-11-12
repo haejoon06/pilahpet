@@ -9,7 +9,7 @@ export async function PATCH(request:Request,context:RouteContext<"/api/letters/[
   const {id}=await context.params;const location=await getLocation();if(!location)return NextResponse.json({error:"Lokasi belum tersedia"},{status:503});
   const data=parsed.data;const status=data.action==="approve"?"approved":"rejected";const sql=getSql();
   if(data.action==="approve"&&(!location.rt_number||!location.rw_number||!location.village||!location.subdistrict||!location.regency||!location.address)){
-    return NextResponse.json({error:"Identitas wilayah belum tersinkron. Minta Ketua RT atau Admin menekan Sinkronkan dari Data Kependudukan pada menu Pengaturan RT."},{status:400});
+    return NextResponse.json({error:"Identitas resmi RT belum lengkap. Hubungi administrator sistem."},{status:400});
   }
   if(data.action==="approve"&&!location.chairperson_name)return NextResponse.json({error:"Belum ada Ketua RT yang aktif pada periode sekarang. Tambahkan periode Ketua RT pada menu Pengaturan RT."},{status:400});
   let row:Record<string,unknown>|undefined;

@@ -1,6 +1,6 @@
 # RT SMART
 
-Portal PKM-Abdimas untuk tata kelola RT: data kependudukan, akun warga, kas RT, surat Word otomatis, serta pilah botol berbasis sensor, QR, dan voucher.
+Portal PKM-Abdimas untuk tata kelola RT 010/RW 004 Puseurjaya: data kependudukan, akun warga, Dana Kematian, Surat Pengantar RT otomatis, serta pilah botol berbasis sensor, QR, dan voucher.
 
 ## Fitur siap pakai
 
@@ -8,7 +8,7 @@ Portal PKM-Abdimas untuk tata kelola RT: data kependudukan, akun warga, kas RT, 
 - Portal warga untuk profil, riwayat surat yang dibuat RT, setoran sensor, dan voucher.
 - Panel pengurus dengan halaman terpisah untuk setiap modul layanan.
 - Data keluarga dan penduduk dengan satu identitas RT/RW otomatis, nomor KK/NIK terenkripsi, tampilan tersamarkan, serta audit akses pencatatan.
-- Buku kas RT terpisah dengan hak perubahan khusus Bendahara dan Admin.
+- Dana Kematian mencatat iuran bulanan warga dengan nominal bebas dan penyaluran santunan, dengan hak perubahan khusus Bendahara dan Admin.
 - Pencatatan surat oleh pengurus saat warga datang ke RT, panduan dokumen, penomoran berurutan, pencarian/filter, dan Word siap cetak yang terisi otomatis. Jenisnya mencakup pengantar umum, domisili, usaha, tidak mampu, SKCK, nikah, izin keramaian, kelahiran, kematian, kehilangan, dan belum menikah.
 - Endpoint perangkat sensor, QR sekali pakai, klaim warga, dan ledger voucher.
 - Pengaturan identitas RT untuk kop surat dan penandatangan.

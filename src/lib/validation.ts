@@ -78,12 +78,24 @@ export const residentSchema = z.object({
   motherName: z.string().trim().max(120).optional().or(z.literal("")),
 });
 
-export const rtCashSchema = z.object({
-  entryType: z.enum(["income","expense"]),
-  category: z.string().trim().min(2).max(80),
-  description: z.string().trim().min(3).max(300),
+export const deathFundSchema = z.object({
+  entryType: z.enum(["contribution","benefit"]),
+  residentId: z.string().uuid().optional().or(z.literal("")),
+  contributionMonth: z.string().regex(/^\d{4}-\d{2}$/,"Bulan iuran belum valid").optional().or(z.literal("")),
+  deceasedName: z.string().trim().max(160).optional().or(z.literal("")),
+  recipientName: z.string().trim().max(160).optional().or(z.literal("")),
+  description: z.string().trim().max(300).optional().or(z.literal("")),
   amount: z.coerce.number().positive().max(1_000_000_000),
   transactionDate: z.string().date(),
+}).superRefine((data,context)=>{
+  if(data.entryType==="contribution"){
+    if(!data.residentId)context.addIssue({code:"custom",path:["residentId"],message:"Pilih warga yang membayar iuran"});
+    if(!data.contributionMonth)context.addIssue({code:"custom",path:["contributionMonth"],message:"Pilih bulan iuran"});
+  }
+  if(data.entryType==="benefit"){
+    if(!data.deceasedName)context.addIssue({code:"custom",path:["deceasedName"],message:"Nama warga yang meninggal wajib diisi"});
+    if(!data.recipientName)context.addIssue({code:"custom",path:["recipientName"],message:"Nama keluarga penerima wajib diisi"});
+  }
 });
 
 export const bottleEventSchema = z.object({
@@ -138,7 +150,10 @@ export const staffLetterRequestSchema=letterRequestBase.extend({
   residentId:z.string().uuid(),
   letterNumber:z.string().trim().max(100).optional().or(z.literal("")),
   notes:z.string().trim().max(300).optional().or(z.literal("")),
-}).superRefine(validateLetterDetails);
+}).superRefine((data,context)=>{
+  validateLetterDetails(data,context);
+  if(data.letterType!=="introduction")context.addIssue({code:"custom",path:["letterType"],message:"Layanan RT ini hanya menerbitkan Surat Pengantar untuk administrasi desa"});
+});
 
 export const letterReviewSchema = z.object({
   action: z.enum(["approve","reject"]),

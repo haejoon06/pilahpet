@@ -16,7 +16,7 @@ RT SMART adalah modular monolith berbasis Next.js. Portal publik, panel pengurus
 |---|---|
 | Ketua RT | Memantau seluruh layanan, menangani administrasi surat, dan mengatur identitas RT |
 | Sekretaris | Mengelola data warga, akun warga, dan surat-menyurat |
-| Bendahara | Mengelola pemasukan dan pengeluaran kas RT |
+| Bendahara | Mengelola iuran dan penyaluran Dana Kematian |
 | Admin | Seluruh modul, akun, konfigurasi, dan pengaturan RT |
 | Pengelola Sampah Botol | Mengelola sensor, QR, setoran botol, dan voucher |
 | Warga | Profil, riwayat surat yang dibuat RT, klaim QR, riwayat botol, dan voucher miliknya |
@@ -28,7 +28,7 @@ Setiap operasi tulis memeriksa sesi di server. Klaim voucher ditangani fungsi Po
 - Akun warga hanya dibuat pengurus dari data penduduk; pendaftaran publik dinonaktifkan.
 - PIN warga disimpan sebagai HMAC dan hanya ditampilkan saat akun diterbitkan.
 - Nomor KK dan NIK disimpan dengan AES-256-GCM, memiliki blind index untuk deteksi duplikasi, dan ditampilkan tersamarkan.
-- Kas RT terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Bendahara atau Admin.
+- Dana Kematian terpisah dari transaksi ekonomi pilah botol dan hanya dapat diubah Bendahara atau Admin.
 - Perangkat sensor memakai kunci khusus, menghasilkan QR sekali pakai yang berlaku 15 menit.
 - Identitas RT/RW dan wilayah disinkronkan dari Data Kependudukan sehingga tidak diketik ulang ketika membuat surat.
 - Ketua RT dan pengurus disimpan pada tabel periode kepengurusan; penandatangan Word dipilih otomatis berdasarkan tanggal surat.

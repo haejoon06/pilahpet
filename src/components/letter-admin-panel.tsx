@@ -2,7 +2,7 @@
 
 import { FormEvent,useEffect,useMemo,useState } from "react";
 import type { Role } from "@/lib/auth";
-import { letterDescriptions,letterLabels,letterRequirements,letterTypeOptions,type LetterType } from "@/lib/letters";
+import { letterLabels,letterTypeOptions,type LetterType } from "@/lib/letters";
 
 type LetterStatus="pending"|"approved"|"rejected";
 type Letter={
@@ -23,7 +23,6 @@ export default function LetterAdminPanel({role}:{role:Role}){
   const canManage=role==="admin"||role==="chairperson"||role==="secretary";
   const [items,setItems]=useState<Letter[]>([]);
   const [residents,setResidents]=useState<ResidentOption[]>([]);
-  const [createType,setCreateType]=useState<LetterType>("introduction");
   const [createdLetter,setCreatedLetter]=useState<CreatedLetter>(null);
   const [message,setMessage]=useState("");
   const [isError,setIsError]=useState(false);
@@ -65,7 +64,7 @@ export default function LetterAdminPanel({role}:{role:Role}){
     if(!response.ok){setIsError(true);setMessage(body.error??"Surat belum dapat dibuat.");return;}
     setCreatedLetter({id:body.id,letter_number:body.letter_number});
     setMessage(`Surat berhasil dicatat dengan nomor ${body.letter_number}. Dokumen Word siap diunduh dan dicetak.`);
-    form.reset();setCreateType("introduction");await loadLetters();await loadResidents();
+    form.reset();await loadLetters();await loadResidents();
   }
 
   async function submitReview(event:FormEvent<HTMLFormElement>){
@@ -78,20 +77,15 @@ export default function LetterAdminPanel({role}:{role:Role}){
   }
 
   return <div className="module-stack">
-    {canManage&&<section className="panel letter-create-panel"><div className="panel-head"><div><p className="eyebrow green">PELAYANAN DI KANTOR RT</p><h2>Catat dan buat surat warga</h2><p className="subtle">Warga datang ke RT. Pengurus memilih data warga, memeriksa dokumen pendukung, lalu mencetak surat.</p></div><span className="result-count">{residents.length} warga</span></div>
+    {canManage&&<section className="panel letter-create-panel"><div className="panel-head"><div><p className="eyebrow green">PELAYANAN DI KANTOR RT</p><h2>Buat Surat Pengantar RT</h2><p className="subtle">Warga datang ke RT. Pengurus memilih data warga dan mencatat keperluan administrasi yang akan disampaikan ke Desa Puseurjaya.</p></div><span className="result-count">{residents.length} warga</span></div>
       {message&&<p className={`message ${isError?"error":"success"}`} role="status">{message}</p>}
       {createdLetter&&<div className="letter-ready"><div><strong>Surat siap dicetak</strong><span>Nomor {createdLetter.letter_number}</span></div><a className="button dark" href={`/api/letters/${createdLetter.id}/docx`}>Unduh Word</a></div>}
       {residents.length?<form className="form letter-create-form" onSubmit={createLetter}>
         <div className="field wide"><label htmlFor="resident-id">Nama warga</label><select id="resident-id" name="residentId" required defaultValue=""><option value="" disabled>Pilih warga dari data kependudukan</option>{residents.map(resident=><option value={resident.id} key={resident.id}>{resident.full_name} · NIK {resident.nik_masked} · RT {resident.rt}/RW {resident.rw}</option>)}</select><small className="field-hint">Jika nama belum tersedia, tambahkan terlebih dahulu pada menu Data Kependudukan.</small></div>
-        <div className="field"><label htmlFor="create-letter-type">Jenis surat</label><select id="create-letter-type" name="letterType" value={createType} onChange={event=>setCreateType(event.target.value as LetterType)}>{letterTypeOptions.map(([value,text])=><option value={value} key={value}>{text}</option>)}</select><small className="field-hint">{letterDescriptions[createType]}</small></div>
+        <input type="hidden" name="letterType" value="introduction"/>
         <div className="field"><label htmlFor="create-letter-number">Nomor surat <span className="optional">(opsional)</span></label><input id="create-letter-number" name="letterNumber" placeholder="Kosongkan untuk nomor otomatis"/><small className="field-hint">Nomor otomatis dibuat berurutan berdasarkan jenis surat, RT/RW, bulan, dan tahun.</small></div>
-        <div className="letter-requirements wide"><strong>Dokumen yang perlu diperiksa</strong><div>{letterRequirements[createType].map(item=><span key={item}>{item}</span>)}</div><small>Daftar ini panduan awal. Sesuaikan dengan ketentuan kelurahan atau instansi tujuan.</small></div>
-        {createType==="business"&&<><div className="field"><label htmlFor="business-name">Nama usaha</label><input id="business-name" name="businessName" required/></div><div className="field"><label htmlFor="business-address">Alamat usaha</label><input id="business-address" name="businessAddress" required/></div></>}
-        {createType==="marriage"&&<><div className="field"><label htmlFor="partner-name">Nama calon pasangan <span className="optional">(opsional)</span></label><input id="partner-name" name="partnerName"/></div><div className="field"><label htmlFor="destination-office">Kelurahan/KUA tujuan <span className="optional">(opsional)</span></label><input id="destination-office" name="destinationOffice"/></div></>}
-        {createType==="crowd_permit"&&<><div className="field"><label htmlFor="event-name">Nama kegiatan</label><input id="event-name" name="eventName" required/></div><div className="field"><label htmlFor="event-date">Tanggal kegiatan</label><input id="event-date" name="eventDate" type="date" required/></div><div className="field"><label htmlFor="event-time">Waktu kegiatan <span className="optional">(opsional)</span></label><input id="event-time" name="eventTime" placeholder="Contoh: 08.00–22.00 WIB"/></div><div className="field"><label htmlFor="event-place">Tempat kegiatan</label><input id="event-place" name="eventPlace" required/></div></>}
-        {createType==="death"&&<><div className="field"><label htmlFor="death-date">Tanggal meninggal</label><input id="death-date" name="deathDate" type="date" required/></div><div className="field"><label htmlFor="death-place">Tempat meninggal</label><input id="death-place" name="deathPlace" required/></div><div className="field wide"><label htmlFor="cause-of-death">Penyebab meninggal <span className="optional">(opsional, sesuai dokumen)</span></label><input id="cause-of-death" name="causeOfDeath"/></div></>}
-        {createType==="loss"&&<><div className="field wide"><label htmlFor="lost-item">Barang atau dokumen yang hilang</label><input id="lost-item" name="lostItem" required/></div><div className="field"><label htmlFor="incident-date">Tanggal kehilangan</label><input id="incident-date" name="incidentDate" type="date" required/></div><div className="field"><label htmlFor="incident-place">Perkiraan tempat kehilangan</label><input id="incident-place" name="incidentPlace" required/></div></>}
-        <div className="field wide"><label htmlFor="create-purpose">Keperluan surat</label><textarea id="create-purpose" name="purpose" rows={3} placeholder="Tuliskan keperluan surat secara jelas" required/></div>
+        <div className="letter-requirements wide"><strong>Dokumen yang diperiksa</strong><div><span>KTP</span><span>KK</span><span>Dokumen pendukung sesuai keperluan</span></div><small>Surat ini merupakan pengantar RT untuk melanjutkan administrasi di Desa Puseurjaya.</small></div>
+        <div className="field wide"><label htmlFor="create-purpose">Keperluan administrasi di desa</label><textarea id="create-purpose" name="purpose" rows={3} placeholder="Contoh: Pengantar untuk mengurus perubahan data Kartu Keluarga di Desa Puseurjaya" required/></div>
         <div className="field wide"><label htmlFor="create-notes">Catatan administrasi <span className="optional">(opsional)</span></label><textarea id="create-notes" name="notes" rows={2} placeholder="Catatan internal pengurus RT"/></div>
         <button className="button dark wide" disabled={busy}>{busy?"Membuat surat…":"Simpan dan buat surat"}</button>
       </form>:<div className="empty-state">Belum ada warga dalam Data Kependudukan. Tambahkan data keluarga dan anggota keluarga terlebih dahulu.</div>}
